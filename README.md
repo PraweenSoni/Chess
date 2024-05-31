@@ -19,11 +19,20 @@
   -  send emojis
   -  viewers join and see your gameplay
   -  viewes also send emojis to players if permissible.
-    
- #### 2. Clone the repo
+ 
+ 
+ #### 1. Clone the repo
   ```sh
-  $ https://github.com/PraweenSoni/Chess.git
+  https://github.com/PraweenSoni/Chess.git
   ```
+#### 2.setup install all Module's -
+```
+npm install
+```
+#### 3.Start Project -
+ ```sh
+npx nodemon
+```
 ## How to Contribute
   1. Fork the the project
   2. Create your feature branch (git checkout -b my-new-feature)
