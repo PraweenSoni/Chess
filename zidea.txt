@@ -1,2 +1,10 @@
 spectoter player also join the match when any one player leave the match.
 check mate nhi ho rha hai raja ko kat nhi pa rhe hai
+
+git pull
+git push
+
+git checkout new-fixes
+git fetch
+git reset
+git restore
