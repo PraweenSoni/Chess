@@ -22,9 +22,11 @@ app.get("/", (req,res)=>{
 
 io.on("connection",function(uniquesocket){
     console.log("Player Connected");
+
     // uniquesocket.on("bol",function(){
     //     io.emit("Haa");
     // })
+
     if(!players.white){
         players.white = uniquesocket.id;
         uniquesocket.emit("playerRole","w");
@@ -41,9 +43,11 @@ io.on("connection",function(uniquesocket){
         if(uniquesocket.id === players.white){
             delete players.white;
             console.log("White Go Offline");
+            io.emit("WPO");
         }else if(uniquesocket.id === players.black){
             delete players.black;
             console.log("Black Go Offline");
+            io.emit("BPO");
         }
     });
 
@@ -66,6 +70,15 @@ io.on("connection",function(uniquesocket){
             console.log(err);
             uniquesocket.emit("Invalid Move :", move);
         }
+        const ischeck = chess.isCheck();
+        console.log(ischeck)
+        io.emit("ischeck",ischeck);
+        const ischeckmate = chess.isCheckmate();
+        console.log(ischeckmate)
+        io.emit("ischeckmate",ischeckmate);
+        const isgameover = chess.isGameOver();
+        console.log(isgameover)
+        io.emit("isgameover",isgameover);
     });
 });
 

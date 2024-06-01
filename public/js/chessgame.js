@@ -1,6 +1,7 @@
 const socket = io();
 const chess = new Chess();
 const boardElement = document.querySelector(".chessboard");
+const infosec = document.querySelector(".infosec");
 
 let draggedPiece = null;
 let sourceSquare = null;
@@ -96,6 +97,7 @@ socket.on("playerRole", function(role){
 });
 socket.on("spectatorRole", function(){
     playerRole = null;
+    infosec.innerText = "Spectator";  
     renderBoard();
 });
 socket.on("boardState", function(fen){
@@ -106,9 +108,46 @@ socket.on("move", function(move){
     chess.move(move);
     renderBoard();
 });
+// const checkmate = chess.isCheck();
+// console.log(checkmate);
+// if(checkmate){
+//     infosec.innerText = "Checkmate...";
+// }
+socket.on("ischeck",function(ischeck){
+    if(ischeck){
+        infosec.innerText = "Checked...";
+    }else{
+        infosec.innerText = "";
+    }
+    renderBoard();
+})
+socket.on("ischeckmate",function(ischeckmate){
+    if(ischeckmate){
+        infosec.innerText = "Checkmate...";
+    }else{
+        infosec.innerText = "";
+    }
+    renderBoard();
+})
+socket.on("isgameover",function(isgameover){
+    if(isgameover){
+        infosec.innerText = "Game Over...Restart Play!";
+    }else{
+        infosec.innerText = "";
+    }
+    renderBoard();
+})
+socket.on("WPO", function(){
+    infosec.innerText = "White Player Goes Offline...";
+})
+socket.on("BPO", function(){
+    infosec.innerText = "Black Player Goes Offline...";
+})
 
-renderBoard();
+
+
 // socket.emit("bol");
 // socket.on("Haa",function(){
-//     console.log("Haa Bol");
+//     // console.log("Haa Bol");
 // })
+renderBoard();

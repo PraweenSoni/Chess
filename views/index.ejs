@@ -11,8 +11,8 @@
             display: grid;
             grid-template-columns: repeat(8, minmax(0, 1fr));
             grid-template-rows: repeat(8, minmax(0,1fr));
-            width: 400px;
-            height: 400px;
+            width: 500px;
+            height: 500px;
             transform: rotate(0deg);
         }
 
@@ -57,7 +57,26 @@
 
 <body>
     <div class="w-full h-screen flex items-center justify-center bg-zinc-900">
-        <div class="chessboard w-96 h-96 bg-red-600">
+        <div>
+            <div class="chessboard border-solid border-4 border-red-600">
+            </div>
+        </div>
+        <div class="w-96 h-96 ml-20 border-solid border-2 border-red-600">
+            <div class="info border-solid flex p-2 w-full h-14 border-2 border-red-600">
+                <p class="text-white">Infomation :- </p>
+                <p class="text-white infosec"></p> 
+            </div>
+            <div class="chatsec border-solid w-full h-60 border-red-600">
+                <div class="chatdisplay border-solid p-2 w-full h-72 border-2 border-red-600">
+                    <p class="text-white">Chat Section</p>
+                </div>
+                <div class="chatfooter border-solid flex w-full h-10">
+                    <div class="chatMsg border-solid w-80 border-2 h-10 w- border-red-600">
+                        <p class="text-white">Message</p>
+                    </div>
+                    <button class="btn h-10 w-14 border-solid border-2 text-white rounded border-white-600">Send</button>
+                </div>
+            </div>
         </div>
     </div>
 
