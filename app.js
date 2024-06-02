@@ -19,6 +19,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
   res.render("index", { title: "Online Chess game" });
 });
+// Chat gpt
+app.get('*', (req, res) => {
+  res.render("index", {title : "Online ChessGame"});
+});
 
 io.on("connection", function (uniquesocket) {
   console.log("Player Connected");
@@ -80,6 +84,7 @@ io.on("connection", function (uniquesocket) {
   });
 });
 
-server.listen(3000, function () {
-  console.log("Server Started! 3000");
+const PORT = process.env.PORT || 3000
+server.listen(PORT, () => {
+  console.log(`Server Started! PORT ${PORT}`);
 });
