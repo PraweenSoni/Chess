@@ -1,5 +1,5 @@
 {
     "version": 2,
-    "builds" : [{ "src" : "./public/js/chessgame.js", "use" : "@vercel/node"}],
+    "builds" : [{ "src" : "/public/js/chessgame.js", "use" : "@vercel/node"}],
     "routes" : [{ "src" : "/{.*}", "dest" : "/"}]
 }
