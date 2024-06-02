@@ -1,91 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Online Chess App</title>
     <script src="https://cdn.tailwindcss.com"></script>
-   <style>
-        .chessboard{
-            display: grid;
-            grid-template-columns: repeat(8, minmax(0, 1fr));
-            grid-template-rows: repeat(8, minmax(0,1fr));
-            width: 500px;
-            height: 500px;
-            transform: rotate(0deg);
-        }
 
-        .piece.white{
-            color: white;
-            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 1));
-        }
-        .piece.black{
-            color: black;
-        }
-        .flipped{
-            transform: rotate(180deg);
-        }
-        .square{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .square.light{
-            background-color: bisque;
-        }
-        .square.dark{
-            background-color: rgb(165, 42, 42);
-        }
-        .piece{
-            font-size: 36px;
-            cursor: pointer;
-        }
+    <style>
+      .chessboard {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        grid-template-rows: repeat(8, minmax(0, 1fr));
+        width: 500px;
+        height: 500px;
+        transform: rotate(0deg);
+      }
 
-        .piece.draggable{
-            cursor: grab;
-        }
-        .dragging{
-            opacity: 0.5;
-        }
+      .piece.white {
+        color: white;
+        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 1));
+      }
+      .piece.black {
+        color: black;
+      }
+      .flipped {
+        transform: rotate(180deg);
+      }
+      .square {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .square.light {
+        background-color: bisque;
+      }
+      .square.dark {
+        background-color: rgb(165, 42, 42);
+      }
+      .piece {
+        font-size: 36px;
+        cursor: pointer;
+      }
 
-        .flipped .piece{
-            transform: rotate(180deg);
-        }
+      .piece.draggable {
+        cursor: grab;
+      }
+      .dragging {
+        opacity: 0.5;
+      }
+
+      .flipped .piece {
+        transform: rotate(180deg);
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="w-full h-screen flex items-center justify-center bg-zinc-900">
-        <div>
-            <div class="chessboard border-solid border-4 border-red-600">
-            </div>
+      <div>
+        <div class="chessboard border-solid border-4 border-red-600"></div>
+      </div>
+      <div class="w-96 h-96 ml-20 border-solid border-2 border-red-600">
+        <div
+          class="info border-solid flex p-2 w-full h-14 border-2 border-red-600"
+        >
+          <p class="text-white">Infomation :-</p>
+          <p class="text-white infosec"></p>
         </div>
-        <div class="w-96 h-96 ml-20 border-solid border-2 border-red-600">
-            <div class="info border-solid flex p-2 w-full h-14 border-2 border-red-600">
-                <p class="text-white">Infomation :- </p>
-                <p class="text-white infosec"></p> 
+        <div class="chatsec border-solid w-full h-60 border-red-600">
+          <div
+            class="chatdisplay border-solid p-2 w-full h-72 border-2 border-red-600"
+          >
+            <p class="text-white">Chat Section</p>
+          </div>
+          <div class="chatfooter border-solid flex w-full h-10">
+            <div
+              class="chatMsg border-solid w-80 border-2 h-10 w- border-red-600"
+            >
+              <p class="text-white">Message</p>
             </div>
-            <div class="chatsec border-solid w-full h-60 border-red-600">
-                <div class="chatdisplay border-solid p-2 w-full h-72 border-2 border-red-600">
-                    <p class="text-white">Chat Section</p>
-                </div>
-                <div class="chatfooter border-solid flex w-full h-10">
-                    <div class="chatMsg border-solid w-80 border-2 h-10 w- border-red-600">
-                        <p class="text-white">Message</p>
-                    </div>
-                    <button class="btn h-10 w-14 border-solid border-2 text-white rounded border-white-600">Send</button>
-                </div>
-            </div>
+            <button
+              class="btn h-10 w-14 border-solid border-2 text-white rounded border-white-600"
+            >
+              Send
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
-        integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
-        crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+      integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"
+      integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
 
     <script src="/js/chessgame.js"></script>
-</body>
-
+  </body>
 </html>
