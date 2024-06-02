@@ -3,6 +3,7 @@ const socket = require("socket.io");
 const http = require("http");
 const { Chess } = require("chess.js");
 const path = require("path");
+const { title } = require("process");
 
 const app = express();
 const server = http.createServer(app);
@@ -14,10 +15,16 @@ let players = {};
 let currentPlayer = "w";
 
 app.set("view engine", "ejs");
+// chatgpt
+app.set('views', path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.render("index", { title: "Online Chess game" });
+});
+// Chat gpt
+app.get('*', (req, res) => {
+  res.render("index", {title : "Online ChessGame"});
 });
 
 io.on("connection", function (uniquesocket) {
@@ -80,6 +87,10 @@ io.on("connection", function (uniquesocket) {
   });
 });
 
-server.listen(3000, function () {
-  console.log("Server Started! 3000");
+// server.listen(3000, function () {
+//   console.log("Server Started! 3000");
+// });
+PORT = 3000
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
