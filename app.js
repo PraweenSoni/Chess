@@ -3,94 +3,141 @@ const socket = require("socket.io");
 const http = require("http");
 const { Chess } = require("chess.js");
 const path = require("path");
-const { title } = require("process");
 
 const app = express();
 const server = http.createServer(app);
 const io = socket(server);
 
-const chess = new Chess();
-
-let players = {};
-let currentPlayer = "w";
-
 app.set("view engine", "ejs");
-// chatgpt
-app.set('views', path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
+// app.js (Express route)
+// app.get("/", (req, res) => {
+//   res.sendFile(__dirname + "/views/home.ejs");
+// });
 app.get("/", (req, res) => {
-  res.render("index", { title: "Online Chess game" });
-});
-// Chat gpt
-app.get('*', (req, res) => {
-  res.render("index", {title : "Online ChessGame"});
+  res.render("home");
 });
 
-io.on("connection", function (uniquesocket) {
-  console.log("Player Connected");
 
-  // uniquesocket.on("bol",function(){
-  //     io.emit("Haa");
-  // })
+app.get('/create', (req, res) => {
+  res.render("index", {title : "Chess game"}); // or res.sendFile(...) depending on your setup
+});
 
-  if (!players.white) {
-    players.white = uniquesocket.id;
-    uniquesocket.emit("playerRole", "w");
-  } else if (!players.black) {
-    players.black = uniquesocket.id;
-    uniquesocket.emit("playerRole", "b");
+app.get('/profile', (req, res) => {
+  res.render('profile'); // assuming EJS
+});
+
+
+app.get('/leaderboard', (req, res) => {
+  res.render('leaderboard'); // assuming EJS template
+});
+
+// Store active rooms and games
+const rooms = {}; // roomId -> { players: { w: socketId, b: socketId }, spectators: [socketId] }
+const games = {}; // roomId -> Chess instance
+
+// Helper: assign player role
+function assignPlayer(roomId, socket) {
+  const room = rooms[roomId];
+
+  if (!room.players.w) {
+    room.players.w = socket.id;
+    socket.emit("playerRole", "w");
+    console.log(`[${roomId}] Assigned white to ${socket.id}`);
+  } else if (!room.players.b) {
+    room.players.b = socket.id;
+    socket.emit("playerRole", "b");
+    console.log(`[${roomId}] Assigned black to ${socket.id}`);
   } else {
-    uniquesocket.emit("spectatorRole");
+    room.spectators.push(socket.id);
+    socket.emit("spectatorRole");
+    console.log(`[${roomId}] Assigned spectator to ${socket.id}`);
   }
 
-  // Player offline code..
-  uniquesocket.on("disconnect", function () {
-    if (uniquesocket.id === players.white) {
-      delete players.white;
-      console.log("White Go Offline");
-      io.emit("WPO");
-    } else if (uniquesocket.id === players.black) {
-      delete players.black;
-      console.log("Black Go Offline");
-      io.emit("BPO");
+  socket.join(roomId);
+  socket.roomId = roomId;
+
+  // Send initial board state
+  socket.emit("boardState", games[roomId].fen());
+}
+
+io.on("connection", (socket) => {
+  console.log("New socket connected:", socket.id);
+
+  // When user joins a room
+  socket.on("joinRoom", (roomId) => {
+    if (!rooms[roomId]) {
+      rooms[roomId] = { players: { w: null, b: null }, spectators: [] };
+      games[roomId] = new Chess();
+      console.log(`Created new room: ${roomId}`);
+    }
+
+    assignPlayer(roomId, socket);
+  });
+
+  // Handle moves
+  socket.on("move", (move) => {
+    const roomId = socket.roomId;
+    const game = games[roomId];
+    if (!game) return;
+
+    const playerColor = Object.entries(rooms[roomId]?.players || {}).find(
+      ([, id]) => id === socket.id
+    )?.[0];
+
+    if (game.turn() !== playerColor) return;
+
+    try {
+      const result = game.move(move);
+      if (!result) {
+        socket.emit("invalidMove", move);
+        return;
+      }
+
+      io.to(roomId).emit("roomId", roomId);
+      io.to(roomId).emit("move", result);
+      io.to(roomId).emit("boardState", game.fen());
+      io.to(roomId).emit("ischeck", game.inCheck());
+      io.to(roomId).emit("ischeckmate", game.isCheckmate());
+      io.to(roomId).emit("isgameover", game.isGameOver());
+    } catch (err) {
+      console.error("Invalid move error:", err.message);
+      socket.emit("invalidMove", move);
     }
   });
 
-  uniquesocket.on("move", (move) => {
-    try {
-      if (chess.turn() == "w" && uniquesocket.id !== players.white) return;
-      if (chess.turn() == "b" && uniquesocket.id !== players.black) return;
+  // Handle disconnect
+  socket.on("disconnect", () => {
+    const roomId = socket.roomId;
+    if (!roomId || !rooms[roomId]) return;
 
-      const result = chess.move(move);
-      if (result) {
-        currentPlayer = chess.turn();
-        io.emit("move", move);
-        io.emit("boardState", chess.fen());
-      } else {
-        console.log("Invalid Move :", move);
-        uniquesocket.emit("Invalid Move ", move);
-      }
-    } catch (err) {
-      console.log(err);
-      uniquesocket.emit("Invalid Move :", move);
+    const room = rooms[roomId];
+    if (room.players.w === socket.id) {
+      room.players.w = null;
+      io.to(roomId).emit("WPO");
+      console.log(`[${roomId}] White player disconnected`);
+    } else if (room.players.b === socket.id) {
+      room.players.b = null;
+      io.to(roomId).emit("BPO");
+      console.log(`[${roomId}] Black player disconnected`);
+    } else {
+      room.spectators = room.spectators.filter((id) => id !== socket.id);
     }
-    const ischeck = chess.isCheck();
-    console.log(ischeck);
-    io.emit("ischeck", ischeck);
-    const ischeckmate = chess.isCheckmate();
-    console.log(ischeckmate);
-    io.emit("ischeckmate", ischeckmate);
-    const isgameover = chess.isGameOver();
-    console.log(isgameover);
-    io.emit("isgameover", isgameover);
+
+    // If room is empty, clean up
+    const isEmpty =
+      !room.players.w && !room.players.b && room.spectators.length === 0;
+    if (isEmpty) {
+      delete rooms[roomId];
+      delete games[roomId];
+      console.log(`Cleaned up empty room: ${roomId}`);
+    }
   });
 });
 
-// server.listen(3000, function () {
-//   console.log("Server Started! 3000");
-// });
-PORT = 3000
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Start server
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

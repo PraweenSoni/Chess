@@ -1,7 +1,7 @@
 {
   "name": "chess",
   "version": "1.0.0",
-  "description": "Online Chess App",
+  "description": "Chess WebApp",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,9 +11,15 @@
   "author": "Praween Soni",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
     "chess.js": "^1.0.0-beta.8",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
+    "express-session": "^1.18.1",
+    "mongoose": "^8.15.0",
     "nodemon": "^3.1.1",
     "socket.io": "^4.7.5"
   }

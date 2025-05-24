@@ -1,2 +1,4 @@
 /node_modules
-/zidea.txt
+.env
+zidea.txt
+zidea.txt

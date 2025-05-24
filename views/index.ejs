@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Online Chess App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title><%= title %></title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
       .chessboard {
         display: grid;
@@ -13,14 +13,6 @@
         width: 500px;
         height: 500px;
         transform: rotate(0deg);
-      }
-
-      .piece.white {
-        color: white;
-        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 1));
-      }
-      .piece.black {
-        color: black;
       }
       .flipped {
         transform: rotate(180deg);
@@ -34,72 +26,49 @@
         background-color: bisque;
       }
       .square.dark {
-        background-color: rgb(165, 42, 42);
+        background-color: brown;
       }
       .piece {
         font-size: 36px;
-        cursor: pointer;
-      }
-
-      .piece.draggable {
         cursor: grab;
       }
-      .dragging {
-        opacity: 0.5;
+      .piece.white {
+        color: white;
+        filter: drop-shadow(0 0 2px black);
       }
-
+      .piece.black {
+        color: black;
+      }
       .flipped .piece {
         transform: rotate(180deg);
       }
     </style>
   </head>
-
-  <body>
-    <div class="w-full h-screen flex items-center justify-center bg-zinc-900">
+  <body class="bg-zinc-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-4">Chess Game</h1>
+    <div class="flex gap-10">
       <div>
-        <div class="chessboard border-solid border-4 border-red-600"></div>
+        <div class="chessboard border-4 border-red-600"></div>
       </div>
-      <div class="w-96 h-96 ml-20 border-solid border-2 border-red-600">
-        <div
-          class="info border-solid flex p-2 w-full h-14 border-2 border-red-600"
-        >
-          <p class="text-white">Infomation :-</p>
-          <p class="text-white infosec"></p>
+      <div>
+        <button>Leave</button>
+      </div>
+      <div class="w-96 h-96 border-2 border-red-600 p-2 flex flex-col">
+        <div class="mb-2">
+          <div class="flex justify-between">
+            <p class="mb-2" id="roomInfo"></p>
+            <p>0:24s</p>
+          </div>
+          <p><strong>Status:</strong> <span class="infosec"></span></p>
         </div>
-        <div class="chatsec border-solid w-full h-60 border-red-600">
-          <div
-            class="chatdisplay border-solid p-2 w-full h-72 border-2 border-red-600"
-          >
-            <p class="text-white">Chat Section</p>
-          </div>
-          <div class="chatfooter border-solid flex w-full h-10">
-            <div
-              class="chatMsg border-solid w-80 border-2 h-10 w- border-red-600"
-            >
-              <p class="text-white">Message</p>
-            </div>
-            <button
-              class="btn h-10 w-14 border-solid border-2 text-white rounded border-white-600"
-            >
-              Send
-            </button>
-          </div>
+        <div class="flex-1 border-2 border-red-600 p-2 overflow-y-auto">
+          <p class="text-sm text-gray-300">Chat section coming soon...</p>
         </div>
       </div>
     </div>
 
-    <script
-      src="https://cdn.socket.io/4.7.5/socket.io.min.js"
-      integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"
-      integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
     <script src="/js/chessgame.js"></script>
   </body>
 </html>

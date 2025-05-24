@@ -1,10 +1,20 @@
 spectoter player also join the match when any one player leave the match.
 check mate nhi ho rha hai raja ko kat nhi pa rhe hai
 
-git pull
-git push
-
 git checkout new-fixes
 git fetch
 git reset
 git restore
+
+profile,
+create game,
+watch game (Public, private, also password protected),
+ratings in also Stars format
+
+routes :
+Create > room/id:
+profile/id:
+
+
+recents 5 game show data (with date and time)
+also spectoter player can send only imojy to player also like

@@ -1,0 +1,41 @@
+.auth-container {
+    @apply min-h-screen flex items-center justify-center p-4;
+}
+
+.auth-card {
+    @apply bg-white rounded-2xl shadow-xl w-full max-w-md p-8;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.auth-title {
+    @apply text-3xl font-bold text-gray-800 mb-8 text-center;
+}
+
+.auth-form {
+    @apply space-y-6;
+}
+
+.form-group {
+    @apply space-y-2;
+}
+
+.form-input {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all;
+}
+
+.auth-button {
+    @apply w-full bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition-all font-medium;
+}
+
+.auth-footer {
+    @apply mt-6 text-center text-gray-600;
+}
+
+.auth-link {
+    @apply text-purple-600 hover:text-purple-700 font-medium;
+}
+
+.auth-error {
+    @apply bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4;
+}
