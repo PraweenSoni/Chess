@@ -1,72 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Chess Lobby</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-      .chessboard {
-        display: grid;
-        grid-template-columns: repeat(8, minmax(0, 1fr));
-        grid-template-rows: repeat(8, minmax(0, 1fr));
-        width: 500px;
-        height: 500px;
-        transform: rotate(0deg);
-      }
-      .flipped {
-        transform: rotate(180deg);
-      }
-      .square {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .square.light {
-        background-color: bisque;
-      }
-      .square.dark {
-        background-color: brown;
-      }
-      .piece {
-        font-size: 36px;
-        cursor: grab;
-      }
-      .piece.white {
-        color: white;
-        filter: drop-shadow(0 0 2px black);
-      }
-      .piece.black {
-        color: black;
-      }
-      .flipped .piece {
-        transform: rotate(180deg);
-      }
+        ::-webkit-scrollbar{
+            display: none;
+        }
+        .pks-sec{
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
     </style>
-  </head>
-  <body class="bg-zinc-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
-    <h1 class="text-2xl font-bold mb-4">Chess Game</h1>
-    <div class="flex gap-10">
-      <div>
-        <div class="chessboard border-4 border-red-600"></div>
-      </div>
-      <div>
-        <button>Leave</button>
-      </div>
-      <div class="w-96 h-96 border-2 border-red-600 p-2 flex flex-col">
-        <div class="mb-2">
-          <div class="flex justify-between">
-            <p class="mb-2" id="roomInfo"></p>
-            <p>0:24s</p>
-          </div>
-          <p><strong>Status:</strong> <span class="infosec"></span></p>
-        </div>
-        <div class="flex-1 border-2 border-red-600 p-2 overflow-y-auto">
-          <p class="text-sm text-gray-300">Chat section coming soon...</p>
-        </div>
-      </div>
-    </div>
+</head>
 
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-    <script src="/js/chessgame.js"></script>
-  </body>
+<body class="bg-gray-900 text-white antialiased">
+    <section class="relative flex justify-center text-center overflowx-hidden">
+        <video autoplay muted loop playsinline class="w-auto min-w-full min-h-full max-w-none fixed">
+            <source src="assets/videos/chess.mp4" type="video/mp4" />
+        </video>
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black opacity-50 fixed"></div>
+        <div class="w-full flex items-center flex-col pks-sec">
+            <!-- <a href="/" class="text-2xl font-bold">Chess Lobby Logo</a> -->
+            <div class="flex items-center justify-between w-[80%] h-screen">
+                <div class="relative z-10 max-w-2xl">
+                    <h1 class="text-5xl font-extrabold mb-4">Play Chess Online</h1>
+                    <p class="text-lg mb-6">Challenge players worldwide & Friends and join exciting matches.</p>
+                    <div class="flex flex-col md:flex-row justify-center gap-4">
+                        <a href="/create"
+                            class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition">
+                            Start Playing</a>
+                        <a href="/board"
+                            class="px-6 py-3 border border-white hover:bg-white hover:text-gray-900 rounded-lg font-semibold transition">Watch Games</a>
+                    </div>
+                </div>
+
+                <!-- Navbar -->
+                <header class="bg-transparent backdrop-blur-xl z-10 p-8">
+                    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                        <nav id="navMenu" class="hidden md:flex flex-col gap-6">
+                            <a href="/watch" class="hover:text-green-500 font-bold transition hover:underline">Watch
+                                Games</a>
+                            <a href="/create" class="hover:text-green-500 font-bold transition hover:underline">Create
+                                Room</a>
+                            <a href="/world" class="hover:text-green-500 font-bold transition hover:underline">World</a>
+                            <a href="/leaderboard"
+                                class="hover:text-green-500 transition font-bold hover:underline">Leaderboard</a>
+                            <a href="/profile" class="hover:text-green-500 font-bold transition hover:underline">Profile</a>
+                            <a href="/login"
+                                class="bg-green-600 px-3 py-1 rounded transition hover:bg-green-700 font-bold">Login</a>
+                            <a href="/signup"
+                                class="border border-green-600 px-3 py-1 rounded transition hover:bg-green-600 font-bold">Sign
+                                Up</a>
+                        </nav>
+                    </div>
+                </header>
+            </div>
+            <!-- Features" + CTA Section -->
+            <section class="relative py-20 bg-cover bg-center w-[95%]">
+                <div class="absolute inset-0 bg-black opacity-60"></div>
+                <div class="relative z-10 max-w-6xl mx-auto px-4 text-center text-white">
+                    <h2 class="text-3xl font-bold mb-8">Why Choose Chess Lobby?</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                        <div class="p-6 backdrop-blur-lg bg-opacity-60 rounded-lg shadow-lg">
+                            <h3 class="text-xl font-semibold mb-2">Real-time Multiplayer</h3>
+                            <p>Play live chess games with opponents around the globe.</p>
+                        </div>
+                        <div class="p-6 backdrop-blur-lg bg-opacity-60 rounded-lg shadow-lg">
+                            <h3 class="text-xl font-semibold mb-2">Spectator Mode</h3>
+                            <p>Watch live matches and learn strategies from top players.</p>
+                        </div>
+                        <div class="p-6 backdrop-blur-lg bg-opacity-60 rounded-lg shadow-lg">
+                            <h3 class="text-xl font-semibold mb-2">Leaderboards & Stats</h3>
+                            <p>Track your ranking, view stats, and improve your gameplay.</p>
+                        </div>
+                    </div>
+                    <a href="/create"
+                        class="px-8 py-4 bg-green-600 hover:bg-green-700 rounded-lg font-semibold inline-block transition">Challenge
+                        Your Friends Now</a>
+                </div>
+                <footer class="w-full bg-transparent py-3 absolute bottom-2">
+                    <div class="mx-3 px-4 flex justify-between">
+                        <p class="pt-[7px]">&copy; 2025 Chess Lobby. All rights reserved.</p>
+                        <div><a href="https://instagram.com/praween_123_pks/" class="px-3 text-2xl"><i class="fa-brands fa-instagram"></i></a><a href="https://facebook.com/profile/praweensoni/"
+                                class="px-3 text-2xl"><i class="fa-brands fa-facebook"></i></a><a href="https://linkedin.com/in/praweensoni/"
+                                class="px-3 text-2xl"><i class="fa-brands fa-linkedin"></i></a><a href="https://github.com/praweensoni"
+                                class="px-3 text-2xl"><i class="fa-brands fa-github"></i></a>
+                        </div>
+                    </div>
+                </footer>
+            </section>              
+        </div>
+    </section>
+</body>
+
 </html>

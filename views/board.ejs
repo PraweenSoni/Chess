@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      .chessboard {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        grid-template-rows: repeat(8, minmax(0, 1fr));
+        width: 500px;
+        height: 500px;
+        transform: rotate(0deg);
+      }
+      .flipped {
+        transform: rotate(180deg);
+      }
+      .square {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .square.light {
+        background-color: bisque;
+      }
+      .square.dark {
+        background-color: brown;
+      }
+      .piece {
+        font-size: 36px;
+        cursor: grab;
+      }
+      .piece.white {
+        color: white;
+        filter: drop-shadow(0 0 2px black);
+      }
+      .piece.black {
+        color: black;
+      }
+      .flipped .piece {
+        transform: rotate(180deg);
+      }
+    </style>
+  </head>
+  <body class="bg-zinc-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-4">Chess Game</h1>
+    <div class="flex gap-10">
+      <div>
+        <div class="chessboard border-4 border-red-600"></div>
+      </div>
+      <div>
+        <button>Leave</button>
+      </div>
+      <div class="w-96 h-96 border-2 border-red-600 p-2 flex flex-col">
+        <div class="mb-2">
+          <div class="flex justify-between">
+            <p class="mb-2" id="roomInfo"></p>
+            <p>0:24s</p>
+          </div>
+          <p><strong>Status:</strong> <span class="infosec"></span></p>
+        </div>
+        <div class="flex-1 border-2 border-red-600 p-2 overflow-y-auto">
+          <p class="text-sm text-gray-300">Chat section coming soon...</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="/js/chessgame.js"></script>
+  </body>
+</html>

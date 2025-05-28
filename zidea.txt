@@ -12,9 +12,12 @@ watch game (Public, private, also password protected),
 ratings in also Stars format
 
 routes :
-Create > room/id:
-profile/id:
-
+Create > room/:id
+profile/:id
 
 recents 5 game show data (with date and time)
 also spectoter player can send only imojy to player also like
+setting > dark mode, board style selection
+
+also log data of last 5 matchs (win/loss)
+and who vs who

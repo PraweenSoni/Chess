@@ -1,34 +1,39 @@
-<% layout('partials/layout', { title: 'Sign Up' }) %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - Chess Lobby</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      background-image: url('assets/images/chess3.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+<body class="bg-zinc-900 text-white flex items-center justify-center h-screen relative">
+  <div class="absolute inset-0 bg-black/50"></div>
+  <div class="bg-zinc-800 p-8 rounded-lg shadow-lg w-full max-w-md z-10">
+    <h2 class="text-2xl font-bold mb-6 text-center">Create Your Account</h2>
+    <form action="/signup" method="POST" class="space-y-4">
+      <input type="text" name="name" placeholder="Name" class="w-full p-3 rounded bg-zinc-700 text-white border border-zinc-600" required />
+      <input type="email" name="email" placeholder="Email" class="w-full p-3 rounded bg-zinc-700 text-white border border-zinc-600" required />
+      <input type="password" name="password" placeholder="Password" class="w-full p-3 rounded bg-zinc-700 text-white border border-zinc-600" required />
+      <input type="password" name="confirmPassword" placeholder="Confirm Password" class="w-full p-3 rounded bg-zinc-700 text-white border border-zinc-600" required />
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-semibold">Sign Up</button>
+    </form>
 
-<div class="auth-container">
-    <div class="auth-card">
-        <h1 class="auth-title">Create Account</h1>
-        
-        <% if (error) { %>
-            <div class="auth-error"><%= error %></div>
-        <% } %>
-
-        <form action="/signup" method="POST" class="auth-form">
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" required class="form-input">
-            </div>
-            
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required class="form-input">
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required class="form-input">
-            </div>
-            
-            <button type="submit" class="auth-button">Sign Up</button>
-        </form>
-        
-        <div class="auth-footer">
-            Already have an account? <a href="/login" class="auth-link">Login here</a>
-        </div>
+    <div class="my-4 text-center text-sm text-gray-500">Or sign up with</div>
+    <div class="flex gap-4">
+      <a href="/auth/google" class="flex-1 bg-red-500 hover:bg-red-600 p-2 rounded text-center">Google</a>
+      <a href="/auth/github" class="flex-1 bg-gray-700 hover:bg-gray-800 p-2 rounded text-center">GitHub</a>
     </div>
-</div>
+
+    <p class="mt-4 text-sm text-gray-400 text-center">
+      Already have an account? <a href="/login" class="text-blue-400 hover:underline">Login</a>
+    </p>
+  </div>
+</body>
+</html>

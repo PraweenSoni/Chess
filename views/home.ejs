@@ -22,14 +22,15 @@
         <a href="/profile" class="hover:bg-zinc-700 p-2 rounded">Profile</a>
         <a href="#" class="hover:bg-zinc-700 p-2 rounded">Notifications</a>
         <a href="#" class="hover:bg-zinc-700 p-2 rounded">Themes</a>
-        <a href="#" class="hover:bg-zinc-700 p-2 rounded">Login/SignUp</a>
+        <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
+        <a href="/signup" class="hover:bg-zinc-700 p-2 rounded">Sign Up</a>
       </nav>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 p-8 overflow-y-auto">
       <div class="flex justify-between items-center mb-8">
-        <h2 class="text-2xl font-semibold">Welcome to Chess</h2>
+        <h2 class="text-2xl font-semibold">Welcome, <%= user.name %>!</h2>
         <a href="/create" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded inline-block">Create Room</a>
       </div>
 
