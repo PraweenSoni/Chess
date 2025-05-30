@@ -1,13 +1,62 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Custom animations */
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+.chessboard {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-template-rows: repeat(8, minmax(0, 1fr));
+    width: 500px;
+    height: 500px;
+    transform: rotate(0deg);
+}
+.chessboard.yourTurn{
+    border: 4px solid #00a63e;
+    animation: fadeBorder 2s infinite;
 }
 
-.float-animation {
-    animation: float 6s ease-in-out infinite;
+@keyframes fadeBorder {
+    0% {
+        border-color: darkgreen;
+    }
+    50% {
+        border-color: #00a63e;
+    }
+    100% {
+        border-color: darkgreen;
+    }
+}
+
+.flipped {
+    transform: rotate(180deg);
+}
+
+.square {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.square.light {
+    background-color: #d3b789;
+    /* background-color: bisque; */
+}
+
+.square.dark {
+    background-color: #7d5530;
+    /* background-color: brown; */
+}
+
+.piece {
+    font-size: 36px;
+    cursor: grab;
+}
+
+.piece.white {
+    color: white;
+    filter: drop-shadow(0 0 2px black);
+}
+
+.piece.black {
+    color: black;
+}
+
+.flipped .piece {
+    transform: rotate(180deg);
 }

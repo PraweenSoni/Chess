@@ -11,9 +11,12 @@
 <body class="bg-zinc-900 text-white">
   <div class="flex h-screen">
     <aside class="w-64 bg-zinc-800 p-5 flex flex-col gap-4">
-      <h1 class="text-xl font-bold text-white mb-4">Chess Lobby</h1>
+      <div class="flex items-center mb-4">
+        <img src="/assets/images/logoWhite.png" class="h-10 w-10 mr-2" alt="">
+        <h1 class="text-xl font-bold text-white">Chess Lobby</h1>
+      </div>
       <nav class="flex flex-col gap-3">
-        <a href="/" class="hover:bg-zinc-700 p-2 rounded">Home</a>
+        <a href="/dashboard" class="hover:bg-zinc-700 p-2 rounded">Home</a>
         <!-- <a href="/watch" class="hover:bg-zinc-700 p-2 rounded">Watch Games</a> -->
         <a href="/create" class="hover:bg-zinc-700 p-2 rounded">Create Room</a>
         <a href="/world" class="hover:bg-zinc-700 p-2 rounded">World</a>
@@ -21,14 +24,20 @@
         <a href="/settings" class="hover:bg-zinc-700 p-2 rounded">Settings</a>
         <a href="/profile" class="bg-zinc-700 p-2 rounded font-semibold text-green-400">Profile</a>
         <a href="/notifications" class="hover:bg-zinc-700 p-2 rounded">Notifications</a>
-        <a href="/themes" class="hover:bg-zinc-700 p-2 rounded">Themes</a>
+        <a href="/Settings" class="hover:bg-zinc-700 p-2 rounded">Settings</a>
+        <% if(user.isLoggedIn) { %>
+          <a href="/logout" class="hover:bg-zinc-700 p-2 rounded">Logout</a>
+        <%} else { %>
+          <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
+          <a href="/signup" class="hover:bg-zinc-700 p-2 rounded">Sign Up</a>
+        <%} %>
       </nav>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 p-8 overflow-y-auto">
       <div class="flex items-center gap-6 mb-8">
-        <img src="/images/avatar.png" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-green-500" />
+        <img src="/assets/images/logo.png" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-green-500 bg-white" />
         <div>
           <h2 class="text-2xl font-bold">
             <%= user.name %>
@@ -44,12 +53,12 @@
         <div class="bg-zinc-800 p-5 rounded shadow">
           <h3 class="text-lg font-semibold mb-4">Stats</h3>
           <div class="space-y-2">
-            <p><strong>Rating:</strong> 2100</p>
-            <p><strong>Likes:</strong> 3100</p>
-            <p><strong>Games Played:</strong> 145</p>
-            <p><strong>Wins:</strong> 110</p>
-            <p><strong>Losses:</strong> 35</p>
-            <p><strong>Rank:</strong> #1 in India</p>
+            <p><strong>Rating:</strong> <%= user.rating %></p>
+            <p><strong>Likes:</strong> <%= user.like %></p>
+            <p><strong>Games Played:</strong> <%= user.gamesPlayed %></p>
+            <p><strong>Wins:</strong> <%= user.gameWins %></p>
+            <p><strong>Losses:</strong>No data</p>
+            <p><strong>Rank:</strong> #<%= user.rank %> in India</p>
           </div>
         </div>
 
@@ -59,7 +68,7 @@
           <form class="space-y-3">
             <input type="text" placeholder="Username"
               class="w-full p-2 rounded bg-zinc-700 border border-zinc-600 text-white" />
-            <input type="email" placeholder="Email"
+            <input type="Country" placeholder="Country"
               class="w-full p-2 rounded bg-zinc-700 border border-zinc-600 text-white" />
             <button type="submit" class="w-full bg-green-600 hover:bg-green-700 p-2 rounded">Update Profile</button>
           </form>
