@@ -100,9 +100,15 @@ const handleMove = (source, target) => {
 
 
 // === Socket Events ===
-const roomId = prompt("Enter room ID to join:");
-socket.emit("joinRoom", roomId || "default");
+// const roomId = prompt("Enter room ID to join:");
+// socket.emit("joinRoom", roomId || "default");
 
+const roomId = prompt("Enter Room ID to join:") || "default";
+socket.emit("joinRoom", { roomId, username: CONFIG.username });
+
+socket.on("opponentName", (name) => {
+  document.getElementById("opponent").innerText = name;
+});
 
 socket.on("playerRole", (role) => {
   playerRole = role;
@@ -114,9 +120,19 @@ socket.on("playerRole", (role) => {
   renderBoard();
 });
 
+socket.on("opponentName", (name) => {
+  if (name) {
+    document.getElementById("opponent").textContent = name;
+  } else {
+    document.getElementById("opponent").textContent = "Waiting for opponent...";
+  }
+});
+
 socket.on("roomId", (roomId) => {
   roomInfo.innerText = `Room ID: ${roomId}`;
 });
+
+
 
 socket.on("boardState", (fen) => {
   chess.load(fen);

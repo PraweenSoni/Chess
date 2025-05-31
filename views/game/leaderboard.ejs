@@ -17,11 +17,10 @@
         <a href="/create" class="hover:bg-zinc-700 p-2 rounded">Create Room</a>
          <a href="#" class="hover:bg-zinc-700 p-2 rounded">World/Friends Online</a>
         <a href="/leaderboard" class="bg-zinc-700 p-2 rounded font-semibold text-green-400">Leaderboard</a>
-        <a href="/settings" class="hover:bg-zinc-700 p-2 rounded">Settings</a>
         <a href="/profile" class="hover:bg-zinc-700 p-2 rounded">Profile</a>
         <a href="/notifications" class="hover:bg-zinc-700 p-2 rounded">Notifications</a>
-        <a href="/Settings" class="hover:bg-zinc-700 p-2 rounded">Settings</a>
-        <% if(user.isLoggedIn) { %>
+        <a href="#" class="hover:bg-zinc-700 p-2 rounded">Settings</a>
+        <% if(users.isLoggedIn) { %>
           <a href="/logout" class="hover:bg-zinc-700 p-2 rounded">Logout</a>
         <%} else { %>
           <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
@@ -45,29 +44,54 @@
               <th class="py-3 px-4">Wins</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Example Row -->
+          <tbody id="usersRows">
+            <% users.forEach(function(user, index){%>
             <tr class="border-b border-zinc-700 hover:bg-zinc-700">
-              <td class="py-3 px-4">1</td>
-              <td class="py-3 px-4 font-semibold">Praween</td>
-              <td class="py-3 px-4">🇮🇳 India</td>
-              <td class="py-3 px-4">2100</td>
-              <td class="py-3 px-4">120</td>
-              <td class="py-3 px-4">98</td>
+              <td class="py-3 px-4"><%= (index+1) + (user.currentUsers - 1) * user.limit %></td>
+              <td class="py-3 px-4 font-semibold"><%= user.username %></td>
+              <td class="py-3 px-4"><%= user.country %></td>
+              <td class="py-3 px-4"><%= user.rating %></td>
+              <td class="py-3 px-4"><%= user.gamesPlayed %></td>
+              <td class="py-3 px-4"><%= user.gamesWins %></td>
             </tr>
-            <!-- Add more rows dynamically -->
-            <tr class="border-b border-zinc-700 hover:bg-zinc-700">
-              <td class="py-3 px-4">2</td>
-              <td class="py-3 px-4 font-semibold">John</td>
-              <td class="py-3 px-4">🇺🇸 USA</td>
-              <td class="py-3 px-4">1980</td>
-              <td class="py-3 px-4">110</td>
-              <td class="py-3 px-4">85</td>
-            </tr>
+            <% }); %>
           </tbody>
         </table>
       </div>
     </main>
   </div>
+  <!-- <script>
+    let currentPage=1;
+    async function fetchUsers(usersDatas) {
+      try {
+        const response = await fetch(`/leaderboard?usersData=${usersDatas}`);
+        const users = await response.json();
+
+        const usersContainer = document.getElementById('usersRows');
+        users.forEach(user => {
+          const userHtml = `
+            <tr class="border-b border-zinc-700 hover:bg-zinc-700">
+              <td class="py-3 px-4">2</td>
+              <td class="py-3 px-4 font-semibold">${user.username}</td>
+              <td class="py-3 px-4">IND</td>
+              <td class="py-3 px-4">${user.rating}</td>
+              <td class="py-3 px-4">${user.gamesPlayed}</td>
+              <td class="py-3 px-4">${user.gameWins}</td>
+            </tr>
+          `;
+          usersContainer.insertAdjacentHTML('beforeend', userHtml);
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchUsers(usersDatas);
+
+    // document.getElementById('loadMore').addEventListener('click', ()=>{
+    //   currentPage++;
+    //   fetchUsers(currentPage);
+    // });
+  </script> -->
 </body>
 </html>
