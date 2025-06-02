@@ -73,15 +73,6 @@ const getPieceUnicode = (piece) => {
   return map[piece.color === "w" ? piece.type.toUpperCase() : piece.type] || "";
 };
 
-// const handleMove = (source, target) => {
-//   const move = {
-//     from: `${String.fromCharCode(97 + source.col)}${8 - source.row}`,
-//     to: `${String.fromCharCode(97 + target.col)}${8 - target.row}`,
-//     promotion: "q",
-//   };
-//   socket.emit("move", move);
-// };
-
 const handleMove = (source, target) => {
   const from = `${String.fromCharCode(97 + source.col)}${8 - source.row}`;
   const to = `${String.fromCharCode(97 + target.col)}${8 - target.row}`;
@@ -119,11 +110,19 @@ socket.on("playerRole", (role) => {
 
 socket.on("spectatorRole", (msg) => {
   infosec.innerText = msg;
+  msgInp.style.display = "none";
+  sendBtn.style.display = "none";
   renderBoard();
 });
 
 socket.on("boardState", (fen) => {
-  chess.load(fen);
+  chess.load(fen); 
+  const isYourTurn = (chess.turn() === playerRole);
+  if (isYourTurn) {
+    boardElement.classList.add("yourTurn");
+  } else {
+    boardElement.classList.remove("yourTurn");
+  }
   renderBoard();
 });
 

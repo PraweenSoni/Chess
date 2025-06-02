@@ -1,25 +1,37 @@
 # Chess Game 
 > You can play chess on realtime. 
-## Show some :heart: and star the repo to support the project.
-# Screenshots about app --
+### Show some :heart: and star the repo to support the project.
+## Screenshots about app --
 <p>
   <img src="https://github.com/PraweenSoni/Chess/assets/106673980/403e873e-e105-4c7e-bc38-b4d454332ca9" heigth="600" width="600" margin-left="20px">
 <!-- ![chess](https://github.com/PraweenSoni/Chess/assets/106673980/403e873e-e105-4c7e-bc38-b4d454332ca9) -->
 </p>
 
 
-# Note
+## Note
   - This repository is still under development and I will continue to add more features to it, also you can contribute in this project.
 
-# Bugs - 
-  -  Checkmate is not happening
- 
-# Upcoming Features
+## Features - 
   -  Chat opponent team in realtime
-  -  send emojis
-  -  viewers join and see your gameplay
-  -  viewes also send emojis to players if permissible.
+  -  Both players can send emojis to each other
+  -  multiple user join same room and see players gameplay.
+## Bugs - 
+  -  when first player create room then opponent name will not update to waiting.
  
+## Upcoming Features
+  - recents 5 game show data (with date and time)
+  - spectoter only send Emoji to players if permissible & like there profile.
+  - if any player leave the game then spectoter give chance to join current game or challenge new game.
+  - watch game (Public, private, also password protected),
+  - add challenge button then player can challenge to each other. 
+  - also users have horner score (like FF), if players leave match without completing it then it will banned for few hours or days
+
+## Planned :-
+  - also log data of last 5 matchs (win/loss)
+  - setting > dark mode, board style selection
+  - routes :
+    Create > room/:id,
+    profile/:id // completed
  
  #### 1. Clone the repo
   ```sh
@@ -31,7 +43,7 @@ npm install
 ```
 #### 3.Start Project -
  ```sh
-npx nodemon
+npx nodemon or npm start
 ```
 ## How to Contribute
   1. Fork the the project
@@ -42,7 +54,7 @@ npx nodemon
 
 ## License
 
-    Copyright (c) 2024 Coding Mobile.
+    Copyright (c) 2024 Praween Soni (Coding Mobile).
     
     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
     
