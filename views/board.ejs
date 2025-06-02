@@ -47,17 +47,41 @@
           <div>
             <div class="chessboard border-4"></div>
           </div>
-          <div class="w-96 h-96 border-2 border-red-600 p-2 flex flex-col">
+          <div class="w-96 h-96 border-2 p-2 flex flex-col">
             <div class="mb-2">
               <!-- <h3 class="text-xl font-semibold mb-4">You White</h3> -->
-              <p><strong>Status:</strong> <span class="infosec"></span></p>
+              <p><span>Status:</span> <strong class="infosec"></strong></p>
               <div class="flex justify-between">
-                <p class="mb-2" id="roomInfo"></p>
-                <p>10:00s</p>
+                <div class="flex">
+                  <p>Room Id:&nbsp;</p>
+                  <strong class="mb-2" id="roomInfo"></strong>
+                </div>
+                <div class="flex">
+                  <p>Your Timmer:&nbsp;</p>
+                  <strong>10:00s</strong>
+                </div>
               </div>
             </div>
-            <div class="flex-1 border-2 border-red-600 p-2 overflow-y-auto">
-              <p class="text-sm text-gray-300">Chat section coming soon...</p>
+            <div class="flex-1 bg-zinc-800 p-2 overflow-y-auto">
+              <p class="text-sm text-gray-400" id="chatInfo">chat message will not save in our database it will delete after game end or room closed!</p>
+              <ul class="h-100%" id="msgSection">
+              </ul>
+            </div>
+            <div id="emojiPanel" class="flex gap-2 p-2">
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">😊</span>
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">😂</span>
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">😍</span>
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">😢</span>
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">😡</span>
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">👍</span>
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">🎉</span>
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">❤️</span>
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">🙌</span>
+              <span class="emoji cursor-pointer rounded hover:bg-zinc-700">🤔</span>
+            </div>
+            <div class="flex mt-2">
+              <input class="w-[80%] bg-zinc-700 mr-2 px-2 py-1" id="msgInp" type="text" placeholder="Type your message here...">
+              <button id="sendBtn" class="bg-green-600 hover:bg-green-700 px-4 py-1 rounded inline-block">Send</button>
             </div>
           </div>
         </div>

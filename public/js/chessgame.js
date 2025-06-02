@@ -4,6 +4,9 @@ const chess = new Chess();
 const boardElement = document.querySelector(".chessboard");
 const infosec = document.querySelector(".infosec");
 const roomInfo = document.getElementById("roomInfo");
+const msgSection = document.getElementById("msgSection");
+const msgInp = document.getElementById("msgInp");
+const sendBtn = document.getElementById("sendBtn");
 
 let draggedPiece = null;
 let sourceSquare = null;
@@ -99,11 +102,9 @@ const handleMove = (source, target) => {
 };
 
 
-// === Socket Events ===
-// const roomId = prompt("Enter room ID to join:");
-// socket.emit("joinRoom", roomId || "default");
-
+// === Socket connection Events ===
 const roomId = prompt("Enter Room ID to join:") || "default";
+roomInfo.innerText = roomId;
 socket.emit("joinRoom", { roomId, username: CONFIG.username });
 
 socket.on("opponentName", (name) => {
@@ -112,27 +113,14 @@ socket.on("opponentName", (name) => {
 
 socket.on("playerRole", (role) => {
   playerRole = role;
-  if (role === "spectatorRole") {
-    infosec.innerText = "You are a Spectator";
-  } else {
-    infosec.innerText = `You are playing as ${role === "w" ? "White" : "Black"}`;
-  }
+  infosec.innerText = `You are playing as ${role === "w" ? "White" : "Black"}`;
   renderBoard();
 });
 
-socket.on("opponentName", (name) => {
-  if (name) {
-    document.getElementById("opponent").textContent = name;
-  } else {
-    document.getElementById("opponent").textContent = "Waiting for opponent...";
-  }
+socket.on("spectatorRole", (msg) => {
+  infosec.innerText = msg;
+  renderBoard();
 });
-
-socket.on("roomId", (roomId) => {
-  roomInfo.innerText = `Room ID: ${roomId}`;
-});
-
-
 
 socket.on("boardState", (fen) => {
   chess.load(fen);
@@ -156,6 +144,10 @@ socket.on("isgameover", (val) => {
   if (val) infosec.innerText = "Game Over!";
 });
 
+socket.on("invalidMove", (move) => {
+  infosec.innerText = `Invalid move: ${move.from} → ${move.to}`;
+});
+
 socket.on("WPO", () => {
   infosec.innerText = "White Player Disconnected";
 });
@@ -164,8 +156,53 @@ socket.on("BPO", () => {
   infosec.innerText = "Black Player Disconnected";
 });
 
-socket.on("invalidMove", (move) => {
-  infosec.innerText = `Invalid move: ${move.from} → ${move.to}`;
+// Chat function
+// Send message
+let msgSend = false;
+sendBtn.addEventListener('click', ()=>{
+  if(msgInp.value){
+    if(!msgSend){
+      document.getElementById('chatInfo').style.display = "none";
+      msgSend = true;
+    }
+    socket.emit('SRUCM', msgInp.value);
+    const chatMsg = `<li class="pt-1">
+    <p class="text-sm text-gray-300 text-right pr-4">${msgInp.value}</p>
+    </li>`
+    msgSection.innerHTML += chatMsg;
+    msgInp.value = '';
+  }
+})
+
+msgInp.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && msgInp.value.trim()) {
+    sendBtn.click();
+  }
 });
+
+//received message
+socket.on("SSUCM", (msg) =>{
+  const chatMsg = `<li class="pt-1">
+                    <p class="text-green-400">${msg}</p>
+                  </li>`
+  msgSection.innerHTML += chatMsg;
+  // window.scrollTo(0, document.body.scrollHeight);
+  msgSection.scrollTop = msgSection.scrollHeight;
+});
+
+document.querySelectorAll(".emoji").forEach(el => {
+  el.addEventListener("click", () => {
+    const emoji = el.textContent;
+
+    socket.emit('SRUCM', emoji);
+
+    const chatMsg = `<li class="pt-1 text-right pr-4 text-gray-300">
+      <p class="text-lg">${emoji}</p>
+    </li>`;
+    msgSection.innerHTML += chatMsg;
+    msgSection.scrollTop = msgSection.scrollHeight;
+  });
+});
+
 
 renderBoard();

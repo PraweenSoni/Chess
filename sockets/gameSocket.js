@@ -41,7 +41,7 @@ function assignPlayer(roomId, socket) {
     role = "b";
   } else {
     room.spectators.push(socket.id);
-    socket.emit("spectatorRole");
+    socket.emit("spectatorRole", "Currently you are as a spectator Role!!!");
     socket.join(roomId);
     return;
   }
@@ -77,9 +77,19 @@ function gameSocket(io) {
       const opponentName = room.usernames[opponentId];
 
       socket.emit("opponentName", opponentName || "Waiting...");
+      // Chat Function start.
+      // SRUCM (Server Received User Chat Messages), SSUCM (Server Send User Chat Message, to frontend)
+      socket.on("SRUCM", (msg)=>{
+        const roomId = socket.roomId;
+        // socket.emit("SSUCM", msg);
+        // io.to(roomId).emit("SSUCM", msg);
+        // console.log(msg);
+        socket.broadcast.to(roomId).emit("SSUCM", msg);
+      });
+      // Chat function end.
     });
 
-    socket.on("move", async (move) => {
+    socket.on("move", (move) => {
       const roomId = socket.roomId;
       const game = games[roomId];
       if (!game) return;
@@ -96,10 +106,7 @@ function gameSocket(io) {
           socket.emit("invalidMove", move);
           return;
         }
-        const user = await User.findById(req.session.userId);
-
-        io.to(roomId).emit("oponent", user);
-        io.to(roomId).emit("roomId", roomId);
+        // io.to(roomId).emit("roomId", roomId);
         io.to(roomId).emit("move", result);
         io.to(roomId).emit("boardState", game.fen());
         io.to(roomId).emit("ischeck", game.inCheck());

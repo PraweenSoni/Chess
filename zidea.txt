@@ -13,7 +13,7 @@ ratings in also Stars format
 
 routes :
 Create > room/:id
-profile/:id
+profile/:id // completed
 
 recents 5 game show data (with date and time)
 also spectoter player can send only imojy to player also like
@@ -21,3 +21,9 @@ setting > dark mode, board style selection
 
 also log data of last 5 matchs (win/loss)
 and who vs who
+
+spectoter only send Emoji to player. also players can send messages also and Emoji
+if any player leave the game then spectoter give chance to join current game or challenge new game.
+when user turn to play then border will green otherwise white ( add class name: yourTurn) 
+
+also user horner score like FF if your leave match then it will banned for few hours
