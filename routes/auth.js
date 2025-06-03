@@ -8,12 +8,18 @@ router.get('/login', (req, res) => res.render('auth/login', { error: null }));
 router.get('/signup', (req, res) => res.render('auth/signup', { error: null }));
 
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
   const user = await User.findOne({ email });
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.render('auth/login', { error: 'Invalid credentials' });
   }
   req.session.userId = user._id;
+  if (rememberMe === 'on') {
+    req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
+  } else {
+    req.session.cookie.expires = false;
+  }
+
   res.redirect('/dashboard');
 });
 

@@ -15,6 +15,7 @@
   -  Chat opponent team in realtime
   -  Both players can send emojis to each other
   -  multiple user join same room and see players gameplay.
+
 ## Bugs - 
   -  when first player create room then opponent name will not update to waiting.
  
@@ -27,6 +28,9 @@
   - also users have horner score (like FF), if players leave match without completing it then it will banned for few hours or days
 
 ## Planned :-
+  - implement remember me button (JWT Token)
+  - auto join using default function++ implement this
+  - click to move for mobile users
   - also log data of last 5 matchs (win/loss)
   - setting > dark mode, board style selection
   - routes :

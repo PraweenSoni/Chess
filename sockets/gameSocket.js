@@ -1,35 +1,13 @@
 const { Chess } = require('chess.js');
-const User = require("../models/User");
+// const User = require("../models/User");
 
 const rooms = {};
 const games = {};
 
-// function assignPlayer(roomId, socket) {
-//   const room = rooms[roomId];
-
-//   if (!room.players.w) {
-//     room.players.w = socket.id;
-//     socket.emit("playerRole", "w");
-//   } else if (!room.players.b) {
-//     room.players.b = socket.id;
-//     socket.emit("playerRole", "b");
-//   } else {
-//     room.spectators.push(socket.id);
-//     socket.emit("spectatorRole");
-//   }
-
-//   socket.join(roomId);
-//   socket.roomId = roomId;
-//   socket.emit("boardState", games[roomId].fen());
-
-//   // Find opponent name if available
-//   const opponentId = role === "w" ? room.players.b : room.players.w;
-//   const opponentName = opponentId ? room.usernames[opponentId] : null;
-
-//   socket.emit("opponentName", opponentName);
-// }
-
 function assignPlayer(roomId, socket) {
+  let roomNo = 1;
+  let playerLimit = 0;
+
   const room = rooms[roomId];
 
   let role;
@@ -45,7 +23,6 @@ function assignPlayer(roomId, socket) {
     socket.join(roomId);
     return;
   }
-
   socket.join(roomId);
   socket.roomId = roomId;
   socket.emit("playerRole", role);
@@ -56,6 +33,12 @@ function assignPlayer(roomId, socket) {
   const opponentName = opponentId ? room.usernames[opponentId] : null;
 
   socket.emit("opponentName", opponentName);
+
+  playerLimit++;
+  if(playerLimit >= 2){
+    playerLimit = 0;
+    roomNo++;
+  }
 }
 
 
