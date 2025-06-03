@@ -41,9 +41,48 @@ function assignPlayer(roomId, socket) {
   }
 }
 
+function getAvailableRandomRoom() {
+  let index = 1;
+  while (true) {
+    const roomId = `default${index}`;
+    const room = rooms[roomId];
+
+    // If room doesn't exist or has less than 2 players
+    if (!room || (room.players && (!room.players.w || !room.players.b))) {
+      return roomId;
+    }
+
+    index++;
+  }
+}
 
 function gameSocket(io) {
   io.on("connection", (socket) => {
+    // Execute when user doesn't enter Room Id.
+    socket.on("joinRandomMatch", ({username}) => {
+    const roomId = getAvailableRandomRoom();
+      if (!rooms[roomId]) {
+        rooms[roomId] = { players: { w: null, b: null }, spectators: [], usernames: {} };
+        games[roomId] = new Chess();
+        console.log(`Created new Random match room: ${roomId}`);
+      }
+
+      rooms[roomId].usernames[socket.id] = username;
+      assignPlayer(roomId, socket);
+
+      // block to emit opponent's name after joining
+      const room = rooms[roomId];
+      const opponentId = Object.entries(room.players).find(([, id]) => id !== socket.id)?.[1];
+      const opponentName = room.usernames[opponentId];
+
+      socket.emit("opponentName", opponentName || "Waiting...");
+      socket.on("SRUCM", (msg)=>{
+        const roomId = socket.roomId;
+        socket.broadcast.to(roomId).emit("SSUCM", msg);
+      });
+    });
+
+    // Execute when user enter Room Id.
     socket.on("joinRoom", ({roomId, username}) => {
       if (!rooms[roomId]) {
         rooms[roomId] = { players: { w: null, b: null }, spectators: [], usernames: {} };
@@ -94,7 +133,19 @@ function gameSocket(io) {
         io.to(roomId).emit("boardState", game.fen());
         io.to(roomId).emit("ischeck", game.inCheck());
         io.to(roomId).emit("ischeckmate", game.isCheckmate());
-        io.to(roomId).emit("isgameover", game.isGameOver());
+
+        if (game.isGameOver()) {
+          const winnerColor = game.turn() === 'w' ? 'b' : 'w'; // player made the last move
+          const winnerId = rooms[roomId].players[winnerColor];
+          const winnerName = rooms[roomId].usernames[winnerId] || 'Not fetch opponent name';
+
+          io.to(roomId).emit("isgameover", {
+            winnerColor,
+            winnerName
+          });
+          // io.to(roomId).emit("isgameover", game.isGameOver());
+        }
+
       } catch (err) {
         socket.emit("invalidMove", move);
       }
@@ -125,4 +176,4 @@ function gameSocket(io) {
   });
 }
 
-module.exports = gameSocket;
+module.exports = {gameSocket, rooms};

@@ -2,6 +2,7 @@ const express = require('express');
 const isAuthenticated = require('../middleware/auth');
 const User = require("../models/User");
 const UserInfo = require("../models/UserInfo");
+const { rooms } = require("../sockets/gameSocket");
 const router = express.Router();
 
 router.get('/', (req, res) => res.render('index'));
@@ -14,10 +15,7 @@ router.get('/', (req, res) => res.render('index'));
 //   res.render('home', {user : {name: user.username}});
 // });
 
-router.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/');
-});
+
 
 router.get('/dashboard', async (req, res) => {
   if (!req.session.userId) {
@@ -25,8 +23,12 @@ router.get('/dashboard', async (req, res) => {
   }
 
   const user = await User.findById(req.session.userId);
-  res.render('home', { user: { name: user.username, isLoggedIn: true } });
+  res.render('home', { user: { name: user.username, isLoggedIn: true }, rooms});
 });
+
+router.get('/rooms', (req, res) => {
+  res.json(rooms);
+})
 
 
 router.get('/create', isAuthenticated, async (req, res) => {

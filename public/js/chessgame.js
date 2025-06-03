@@ -94,9 +94,15 @@ const handleMove = (source, target) => {
 
 
 // === Socket connection Events ===
-const roomId = prompt("Enter Room ID to join:") || "default";
-roomInfo.innerText = roomId;
-socket.emit("joinRoom", { roomId, username: CONFIG.username });
+const roomId = prompt("Enter Room ID to join:");
+
+if (!roomId) {
+  socket.emit("joinRandomMatch", {username: CONFIG.username});
+} else {
+  roomInfo.innerText = roomId;
+  socket.emit("joinRoom", { roomId, username: CONFIG.username });
+}
+
 
 socket.on("opponentName", (name) => {
   document.getElementById("opponent").innerText = name;
@@ -139,8 +145,15 @@ socket.on("ischeckmate", (val) => {
   if (val) infosec.innerText = "Checkmate!";
 });
 
-socket.on("isgameover", (val) => {
-  if (val) infosec.innerText = "Game Over!";
+socket.on("gameOver", ({ winnerColor, winnerName }) => {
+  const gameOverMessage = `Game Over! Winner: ${winnerName} (${winnerColor === 'w' ? 'White' : 'Black'})`;
+  
+  if (infosec) {
+    infosec.innerText = gameOverMessage;
+    // infosec.classList.remove("hidden");
+  } else {
+    alert(gameOverMessage); // fallback
+  }
 });
 
 socket.on("invalidMove", (move) => {

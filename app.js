@@ -13,7 +13,7 @@ const authRoutes = require("./routes/auth");
 const indexRoutes = require("./routes/index");
 const userProfile = require("./routes/user");
 
-const gameSocket = require("./sockets/gameSocket");
+const { gameSocket } = require("./sockets/gameSocket");
 
 const app = express();
 const server = http.createServer(app);

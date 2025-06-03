@@ -6,6 +6,11 @@ const router = express.Router();
 
 router.get('/login', (req, res) => res.render('auth/login', { error: null }));
 router.get('/signup', (req, res) => res.render('auth/signup', { error: null }));
+router.get('/logout', (req, res) => {
+  res.clearCookie('connect.sid'); 
+  req.session.destroy();
+  res.redirect('/');
+});
 
 router.post('/login', async (req, res) => {
   const { email, password, rememberMe } = req.body;

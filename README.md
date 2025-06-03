@@ -28,7 +28,6 @@
   - also users have horner score (like FF), if players leave match without completing it then it will banned for few hours or days
 
 ## Planned :-
-  - implement remember me button (JWT Token)
   - auto join using default function++ implement this
   - click to move for mobile users
   - also log data of last 5 matchs (win/loss)

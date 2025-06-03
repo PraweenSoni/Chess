@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const GameSchema = new mongoose.Schema({
+  roomId: { type: String},
   playerWhite: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   playerBlack: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   moves: [{ type: String }], // Algebraic notation
