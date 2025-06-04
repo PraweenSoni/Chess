@@ -4,7 +4,6 @@
 ## Screenshots about app --
 <p>
   <img src="https://github.com/PraweenSoni/Chess/assets/106673980/403e873e-e105-4c7e-bc38-b4d454332ca9" heigth="600" width="600" margin-left="20px">
-<!-- ![chess](https://github.com/PraweenSoni/Chess/assets/106673980/403e873e-e105-4c7e-bc38-b4d454332ca9) -->
 </p>
 
 
@@ -19,22 +18,18 @@
 ## Bugs - 
   -  when first player create room then opponent name will not update to waiting.
  
-## Upcoming Features
-  - recents 5 game show data (with date and time)
+## Upcoming Features (Priority top to bottom) :
+  - click to move for mobile users
+  - game data update to users database to update profile information
+  - recents 5 game show data (with date and time).
   - spectoter only send Emoji to players if permissible & like there profile.
   - if any player leave the game then spectoter give chance to join current game or challenge new game.
   - watch game (Public, private, also password protected),
   - add challenge button then player can challenge to each other. 
-  - also users have horner score (like FF), if players leave match without completing it then it will banned for few hours or days
-
-## Planned :-
-  - auto join using default function++ implement this
-  - click to move for mobile users
-  - also log data of last 5 matchs (win/loss)
+  - users have horner score (like FF), if players leave match without completing it then it will banned for few hours or days
   - setting > dark mode, board style selection
   - routes :
-    Create > room/:id,
-    profile/:id // completed
+    Create > room/:id for visitor join
  
  #### 1. Clone the repo
   ```sh

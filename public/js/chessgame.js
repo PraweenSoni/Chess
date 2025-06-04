@@ -10,6 +10,7 @@ const sendBtn = document.getElementById("sendBtn");
 
 let draggedPiece = null;
 let sourceSquare = null;
+let selectedSquare = null;
 let playerRole = null;
 
 const renderBoard = () => {
@@ -53,6 +54,41 @@ const renderBoard = () => {
           handleMove(sourceSquare, target);
         }
       });
+      
+      if (selectedSquare && selectedSquare.row === rowIndex && selectedSquare.col === colIndex) {
+        squareElement.classList.add("selected");
+      }
+
+      squareElement.addEventListener("click", () => {
+        const row = parseInt(squareElement.dataset.row);
+        const col = parseInt(squareElement.dataset.col);
+
+        const square = chess.board()[row][col];
+
+        if (selectedSquare) {
+          const from = `${String.fromCharCode(97 + selectedSquare.col)}${8 - selectedSquare.row}`;
+          const to = `${String.fromCharCode(97 + col)}${8 - row}`;
+
+          const movingPiece = chess.get(from);
+          const isPromotionMove =
+            movingPiece?.type === 'p' &&
+            ((movingPiece.color === 'w' && to[1] === '8') ||
+              (movingPiece.color === 'b' && to[1] === '1'));
+
+          const move = {
+            from,
+            to,
+            ...(isPromotionMove && { promotion: 'q' }),
+          };
+
+          socket.emit("move", move);
+          selectedSquare = null; 
+        } else if (square && playerRole === square.color) {
+          selectedSquare = { row, col };
+        }
+      });
+
+      
 
       boardElement.appendChild(squareElement);
     });
@@ -81,7 +117,7 @@ const handleMove = (source, target) => {
   const isPromotionMove =
     movingPiece?.type === 'p' &&
     ((movingPiece.color === 'w' && to[1] === '8') ||
-     (movingPiece.color === 'b' && to[1] === '1'));
+      (movingPiece.color === 'b' && to[1] === '1'));
 
   const move = {
     from,
@@ -94,15 +130,18 @@ const handleMove = (source, target) => {
 
 
 // === Socket connection Events ===
-const roomId = prompt("Enter Room ID to join:");
+const roomId = prompt("Enter Room ID to join (if you not provide room name then it will auto named):");
 
 if (!roomId) {
-  socket.emit("joinRandomMatch", {username: CONFIG.username});
+  socket.emit("joinRandomMatch", { username: CONFIG.username });
 } else {
-  roomInfo.innerText = roomId;
   socket.emit("joinRoom", { roomId, username: CONFIG.username });
 }
 
+
+socket.on("roomId", (roomId) => {
+  roomInfo.innerText = roomId;
+});
 
 socket.on("opponentName", (name) => {
   document.getElementById("opponent").innerText = name;
@@ -121,8 +160,25 @@ socket.on("spectatorRole", (msg) => {
   renderBoard();
 });
 
+let time;
+let timerDiv = document.getElementById('timer');
+socket.on("timer", (remainingTime) => {
+  time = remainingTime;
+})
+const timer = setInterval(() => {
+  time--;
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  timerDiv.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  if (time <= 0) {
+    clearInterval(timer);
+    timerDiv.textContent = "Time's Up!";
+  }
+}, 1000);
+
+
 socket.on("boardState", (fen) => {
-  chess.load(fen); 
+  chess.load(fen);
   const isYourTurn = (chess.turn() === playerRole);
   if (isYourTurn) {
     boardElement.classList.add("yourTurn");
@@ -147,7 +203,7 @@ socket.on("ischeckmate", (val) => {
 
 socket.on("gameOver", ({ winnerColor, winnerName }) => {
   const gameOverMessage = `Game Over! Winner: ${winnerName} (${winnerColor === 'w' ? 'White' : 'Black'})`;
-  
+
   if (infosec) {
     infosec.innerText = gameOverMessage;
     // infosec.classList.remove("hidden");
@@ -171,9 +227,9 @@ socket.on("BPO", () => {
 // Chat function
 // Send message
 let msgSend = false;
-sendBtn.addEventListener('click', ()=>{
-  if(msgInp.value){
-    if(!msgSend){
+sendBtn.addEventListener('click', () => {
+  if (msgInp.value) {
+    if (!msgSend) {
       document.getElementById('chatInfo').style.display = "none";
       msgSend = true;
     }
@@ -193,7 +249,7 @@ msgInp.addEventListener('keydown', (e) => {
 });
 
 //received message
-socket.on("SSUCM", (msg) =>{
+socket.on("SSUCM", (msg) => {
   const chatMsg = `<li class="pt-1">
                     <p class="text-green-400">${msg}</p>
                   </li>`

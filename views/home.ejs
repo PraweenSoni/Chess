@@ -85,7 +85,7 @@
       </div>
     </main>
   </div>
-  <!-- <script>
+  <script>
     const rooms = {
                   "default1": {
                     "players": {
@@ -111,6 +111,11 @@
     let roomsList = document.getElementById("rooms-list");
     Object.keys(rooms).forEach(roomName => {
     console.log(roomName);
+    const room = rooms[roomName];
+    if(room['usernames']){
+      const username = Object.values(room['usernames'])[0];
+      console.log(username);
+    }
       roomsList += `<div class="bg-zinc-800 p-4 rounded shadow">
             <p class="text-sm text-gray-400">Room Name #${roomName}</p>
             <div class="flex justify-between mt-2">
@@ -122,6 +127,6 @@
           </div>`
     })
     console.log(rooms);
-  </script> -->
+  </script>
 </body>
 </html>

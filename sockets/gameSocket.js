@@ -25,6 +25,7 @@ function assignPlayer(roomId, socket) {
   }
   socket.join(roomId);
   socket.roomId = roomId;
+  socket.emit("roomId", roomId);
   socket.emit("playerRole", role);
   socket.emit("boardState", games[roomId].fen());
 
@@ -33,6 +34,22 @@ function assignPlayer(roomId, socket) {
   const opponentName = opponentId ? room.usernames[opponentId] : null;
 
   socket.emit("opponentName", opponentName);
+
+  let time = 600;
+  const timer = setInterval(()=>{
+    time--;
+
+    socket.emit("timer", time);
+    if(time == 300){
+      socket.emit("timer", time);
+    }
+    
+    if(time <= 0){
+      socket.emit("timer", time);
+      clearInterval(timer);
+      console.log("time Up!", timer);
+    }
+  }, 1000);
 
   playerLimit++;
   if(playerLimit >= 2){
@@ -128,7 +145,7 @@ function gameSocket(io) {
           socket.emit("invalidMove", move);
           return;
         }
-        // io.to(roomId).emit("roomId", roomId);
+        
         io.to(roomId).emit("move", result);
         io.to(roomId).emit("boardState", game.fen());
         io.to(roomId).emit("ischeck", game.inCheck());
