@@ -19,10 +19,10 @@
   -  when first player create room then opponent name will not update to waiting.
  
 ## Upcoming Features (Priority top to bottom) :
-  - click to move for mobile users
   - game data update to users database to update profile information
   - recents 5 game show data (with date and time).
   - spectoter only send Emoji to players if permissible & like there profile.
+  - add undo functionality
   - if any player leave the game then spectoter give chance to join current game or challenge new game.
   - watch game (Public, private, also password protected),
   - add challenge button then player can challenge to each other. 

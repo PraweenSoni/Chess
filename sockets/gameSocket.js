@@ -1,5 +1,5 @@
 const { Chess } = require('chess.js');
-// const User = require("../models/User");
+const UserInfo = require("../models/UserInfo");
 
 const rooms = {};
 const games = {};
@@ -79,7 +79,7 @@ function gameSocket(io) {
     socket.on("joinRandomMatch", ({username}) => {
     const roomId = getAvailableRandomRoom();
       if (!rooms[roomId]) {
-        rooms[roomId] = { players: { w: null, b: null }, spectators: [], usernames: {} };
+        rooms[roomId] = { players: { w: null, b: null }, spectators: [], userIds:{}, usernames: {} };
         games[roomId] = new Chess();
         console.log(`Created new Random match room: ${roomId}`);
       }
@@ -93,6 +93,10 @@ function gameSocket(io) {
       const opponentName = room.usernames[opponentId];
 
       socket.emit("opponentName", opponentName || "Waiting...");
+      if (opponentId && io.sockets.sockets.get(opponentId)) {
+        const currentUsername = room.usernames[socket.id];
+        io.to(opponentId).emit("opponentName", currentUsername);
+      }
       socket.on("SRUCM", (msg)=>{
         const roomId = socket.roomId;
         socket.broadcast.to(roomId).emit("SSUCM", msg);
@@ -102,7 +106,7 @@ function gameSocket(io) {
     // Execute when user enter Room Id.
     socket.on("joinRoom", ({roomId, username}) => {
       if (!rooms[roomId]) {
-        rooms[roomId] = { players: { w: null, b: null }, spectators: [], usernames: {} };
+        rooms[roomId] = { players: { w: null, b: null }, spectators: [], userIds: {}, usernames: {} };
         games[roomId] = new Chess();
         console.log(`Created new room: ${roomId}`);
       }
@@ -149,18 +153,70 @@ function gameSocket(io) {
         io.to(roomId).emit("move", result);
         io.to(roomId).emit("boardState", game.fen());
         io.to(roomId).emit("ischeck", game.inCheck());
-        io.to(roomId).emit("ischeckmate", game.isCheckmate());
+
+        if (game.isGameOver()){
+          const winnerColor = game.turn() === 'w' ? 'b' : 'w';
+          const loserColor = game.turn();
+
+          const winnerId = rooms[roomId].players[winnerColor];
+          const winnerName = rooms[roomId].usernames[winnerId] || 'Not fetch opponent name';
+          const loserId = rooms[roomId].players[loserColor];
+
+          const savePlayerStats = async () => {
+          try {
+            // Winner update
+            await UserInfo.findOneAndUpdate(
+              { userId: winnerId },
+              {
+                $inc: {
+                  rating: 10,
+                  gamesPlayed: 1,
+                  gamesWins: 1
+                }
+              }
+            );
+
+            // Loser update
+            await UserInfo.findOneAndUpdate(
+              { userId: loserId },
+                  {
+                    $inc: {
+                      rating: -10,
+                      gamesPlayed: 1
+                    }
+                  }
+                );
+              } catch (err) {
+                console.error("Failed to update UserInfo:", err);
+              }
+            };
+
+          savePlayerStats();
+        }
 
         if (game.isGameOver()) {
+          let GameResult = { type: "unknown" };
           const winnerColor = game.turn() === 'w' ? 'b' : 'w'; // player made the last move
+
           const winnerId = rooms[roomId].players[winnerColor];
           const winnerName = rooms[roomId].usernames[winnerId] || 'Not fetch opponent name';
 
-          io.to(roomId).emit("isgameover", {
-            winnerColor,
-            winnerName
-          });
-          // io.to(roomId).emit("isgameover", game.isGameOver());
+          if (game.isCheckmate()) {
+            GameResult =  {
+              type: "checkmate",
+              winnerColor: winnerColor,
+              winnerName : winnerName,
+            };
+          } else if (game.isDraw()) {
+            GameResult =  {
+              type: "Draw",
+            };
+          } else {
+            GameResult =  {
+              type: "Unknown",
+            };
+          }
+          io.to(roomId).emit("gameResult", GameResult);
         }
 
       } catch (err) {

@@ -12,6 +12,7 @@ let draggedPiece = null;
 let sourceSquare = null;
 let selectedSquare = null;
 let playerRole = null;
+let isGameOver = false;
 
 const renderBoard = () => {
   const board = chess.board();
@@ -88,8 +89,6 @@ const renderBoard = () => {
         }
       });
 
-      
-
       boardElement.appendChild(squareElement);
     });
   });
@@ -110,6 +109,7 @@ const getPieceUnicode = (piece) => {
 };
 
 const handleMove = (source, target) => {
+  if (isGameOver) return;
   const from = `${String.fromCharCode(97 + source.col)}${8 - source.row}`;
   const to = `${String.fromCharCode(97 + target.col)}${8 - target.row}`;
 
@@ -197,24 +197,23 @@ socket.on("ischeck", (val) => {
   if (val) infosec.innerText = "Check!";
 });
 
-socket.on("ischeckmate", (val) => {
-  if (val) infosec.innerText = "Checkmate!";
-});
-
-socket.on("gameOver", ({ winnerColor, winnerName }) => {
-  const gameOverMessage = `Game Over! Winner: ${winnerName} (${winnerColor === 'w' ? 'White' : 'Black'})`;
-
-  if (infosec) {
-    infosec.innerText = gameOverMessage;
-    // infosec.classList.remove("hidden");
-  } else {
-    alert(gameOverMessage); // fallback
-  }
-});
 
 socket.on("invalidMove", (move) => {
   infosec.innerText = `Invalid move: ${move.from} → ${move.to}`;
 });
+
+socket.on("gameResult", (result) => {
+  isGameOver = true;
+  const gameOverMessage = `Game Over! Winner: ${result.winnerName} (${result.winnerColor === 'w' ? 'White' : 'Black'})`;
+  if (result.type === "checkmate") {
+    infosec.innerText = gameOverMessage;
+    alert(`Checkmate! Winner is ${result.winnerName}`);
+  } else if (result.type === "draw") {
+    infosec.innerText = "Game is draw!!";
+    alert("Game is a draw!");
+  }
+});
+
 
 socket.on("WPO", () => {
   infosec.innerText = "White Player Disconnected";
@@ -255,7 +254,7 @@ socket.on("SSUCM", (msg) => {
                   </li>`
   msgSection.innerHTML += chatMsg;
   // window.scrollTo(0, document.body.scrollHeight);
-  msgSection.scrollTop = msgSection.scrollHeight;
+  // msgSection.scrollTop = msgSection.scrollHeight;
 });
 
 document.querySelectorAll(".emoji").forEach(el => {
