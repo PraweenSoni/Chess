@@ -31,6 +31,8 @@
     Create > room/:id for visitor join
   - leaderboard short via wins
   - leaderboard user profile link add
+  - Bot play
+  - puzzels 
  
  #### 1. Clone the repo
   ```sh

@@ -7,13 +7,13 @@ const router = express.Router();
 
 router.get('/', (req, res) => res.render('index'));
 
-router.get('/', isAuthenticated, async (req, res) => {
+router.get('/dashboard', isAuthenticated, async (req, res) => {
   if(!req.session.userId) return res.redirect('/login');
 
   const user = await User.findById(req.session.userId);
   if(!user) return res.redirect('/login');
 
-  res.render('home', {user : {name: user.username}});
+  res.render('home', {user : {name: user.username}, rooms});
 });
 
 router.get('/rooms', (req, res) => {

@@ -79,47 +79,47 @@
     </main>
   </div>
   <script>
-    // const rooms = {
-    //               "default1": {
-    //                 "players": {
-    //                   "w": "IYJbzFRrbVgjwZDYAAAH",
-    //                   "b": null
-    //                 },
-    //                 "spectators": [],
-    //                 "usernames": {
-    //                   "IYJbzFRrbVgjwZDYAAAH": "pks"
-    //                 }
-    //               },
-    //               "new1": {
-    //                 "players": {
-    //                   "w": "qkUo6BU3RAizLDOWAAAJ",
-    //                   "b": null
-    //                 },
-    //                 "spectators": [],
-    //                 "usernames": {
-    //                   "qkUo6BU3RAizLDOWAAAJ": "psoni"
-    //                 }
-    //               }
-    //             }
-    // let roomsList = document.getElementById("rooms-list");
-    // Object.keys(rooms).forEach(roomName => {
-    // console.log(roomName);
-    // const room = rooms[roomName];
-    // if(room['usernames']){
-    //   const username = Object.values(room['usernames'])[0];
-    //   console.log(username);
-    // }
-    //   roomsList += `<div class="bg-zinc-800 p-4 rounded shadow">
-    //         <p class="text-sm text-gray-400">Room Name #${roomName}</p>
-    //         <div class="flex justify-between mt-2">
-    //           <span>🇮🇳 Pks</span>
-    //           <span>vs</span>
-    //           <span>Raj 🇮🇳</span>
-    //         </div>
-    //         <button class="mt-3 w-full bg-blue-600 hover:bg-blue-700 py-1 rounded">Watch</button>
-    //       </div>`
-    // })
-    // console.log(rooms);
+    const rooms = {
+                  "default1": {
+                    "players": {
+                      "w": "IYJbzFRrbVgjwZDYAAAH",
+                      "b": null
+                    },
+                    "spectators": [],
+                    "usernames": {
+                      "IYJbzFRrbVgjwZDYAAAH": "pks"
+                    }
+                  },
+                  "new1": {
+                    "players": {
+                      "w": "qkUo6BU3RAizLDOWAAAJ",
+                      "b": null
+                    },
+                    "spectators": [],
+                    "usernames": {
+                      "qkUo6BU3RAizLDOWAAAJ": "psoni"
+                    }
+                  }
+                }
+    let roomsList = document.getElementById("rooms-list");
+    Object.keys(rooms).forEach(roomName => {
+    console.log(roomName);
+    const room = rooms[roomName];
+    if(room['usernames']){
+      const username = Object.values(room['usernames'])[0];
+      console.log(username);
+    }
+      roomsList += `<div class="bg-zinc-800 p-4 rounded shadow">
+            <p class="text-sm text-gray-400">Room Name #${roomName}</p>
+            <div class="flex justify-between mt-2">
+              <span>🇮🇳 Pks</span>
+              <span>vs</span>
+              <span>Raj 🇮🇳</span>
+            </div>
+            <button class="mt-3 w-full bg-blue-600 hover:bg-blue-700 py-1 rounded">Watch</button>
+          </div>`
+    })
+    console.log(rooms);
   </script>
 </body>
 
