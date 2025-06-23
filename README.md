@@ -16,11 +16,10 @@
   -  multiple user join same room and see players gameplay.
 
 ## Bugs - 
-  -  when first player create room then opponent name will not update to waiting.
+  <!-- -  when first player create room then opponent name will not update to waiting. -->
  
 ## Upcoming Features (Priority top to bottom) :
-  - game data update to users database to update profile information
-  - recents 5 game show data (with date and time).
+  - recents 5 game show data (with date and users info).
   - spectoter only send Emoji to players if permissible & like there profile.
   - add undo functionality
   - if any player leave the game then spectoter give chance to join current game or challenge new game.
@@ -30,6 +29,8 @@
   - setting > dark mode, board style selection
   - routes :
     Create > room/:id for visitor join
+  - leaderboard short via wins
+  - leaderboard user profile link add
  
  #### 1. Clone the repo
   ```sh

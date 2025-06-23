@@ -4,7 +4,7 @@ const UserInfo = require("../models/UserInfo");
 const rooms = {};
 const games = {};
 
-function assignPlayer(roomId, socket) {
+function assignPlayer(roomId, socket, userId) {
   let roomNo = 1;
   let playerLimit = 0;
 
@@ -23,6 +23,15 @@ function assignPlayer(roomId, socket) {
     socket.join(roomId);
     return;
   }
+
+  // Only assign if userId is valid
+  if (userId && typeof userId === "string" && userId.length === 24) {
+    room.userMongoIds[socket.id] = userId;
+  } else {
+    console.warn(`⚠️ Invalid or missing userId for socket ${socket.id}:`, userId);
+    room.userMongoIds[socket.id] = null; // fallback if needed
+  }
+
   socket.join(roomId);
   socket.roomId = roomId;
   socket.emit("roomId", roomId);
@@ -32,19 +41,17 @@ function assignPlayer(roomId, socket) {
   // Find opponent name if available
   const opponentId = role === "w" ? room.players.b : room.players.w;
   const opponentName = opponentId ? room.usernames[opponentId] : null;
-
   socket.emit("opponentName", opponentName);
 
+  // Countdown timer logic
   let time = 600;
-  const timer = setInterval(()=>{
+  const timer = setInterval(() => {
     time--;
-
     socket.emit("timer", time);
-    if(time == 300){
+    if (time === 300) {
       socket.emit("timer", time);
     }
-    
-    if(time <= 0){
+    if (time <= 0) {
       socket.emit("timer", time);
       clearInterval(timer);
       console.log("time Up!", timer);
@@ -52,7 +59,7 @@ function assignPlayer(roomId, socket) {
   }, 1000);
 
   playerLimit++;
-  if(playerLimit >= 2){
+  if (playerLimit >= 2) {
     playerLimit = 0;
     roomNo++;
   }
@@ -63,73 +70,65 @@ function getAvailableRandomRoom() {
   while (true) {
     const roomId = `default${index}`;
     const room = rooms[roomId];
-
-    // If room doesn't exist or has less than 2 players
     if (!room || (room.players && (!room.players.w || !room.players.b))) {
       return roomId;
     }
-
     index++;
   }
 }
 
 function gameSocket(io) {
   io.on("connection", (socket) => {
-    // Execute when user doesn't enter Room Id.
-    socket.on("joinRandomMatch", ({username}) => {
-    const roomId = getAvailableRandomRoom();
+    // When a user joins a random match
+    socket.on("joinRandomMatch", ({ username, userId }) => {
+      const roomId = getAvailableRandomRoom();
       if (!rooms[roomId]) {
-        rooms[roomId] = { players: { w: null, b: null }, spectators: [], userIds:{}, usernames: {} };
+        rooms[roomId] = { players: { w: null, b: null }, spectators: [], userIds: {}, usernames: {}, userMongoIds: {} };
         games[roomId] = new Chess();
         console.log(`Created new Random match room: ${roomId}`);
       }
 
       rooms[roomId].usernames[socket.id] = username;
-      assignPlayer(roomId, socket);
+      assignPlayer(roomId, socket, userId); // Pass userId to assignPlayer
 
-      // block to emit opponent's name after joining
       const room = rooms[roomId];
       const opponentId = Object.entries(room.players).find(([, id]) => id !== socket.id)?.[1];
       const opponentName = room.usernames[opponentId];
-
       socket.emit("opponentName", opponentName || "Waiting...");
+
       if (opponentId && io.sockets.sockets.get(opponentId)) {
         const currentUsername = room.usernames[socket.id];
         io.to(opponentId).emit("opponentName", currentUsername);
       }
-      socket.on("SRUCM", (msg)=>{
+
+      socket.on("SRUCM", (msg) => {
         const roomId = socket.roomId;
         socket.broadcast.to(roomId).emit("SSUCM", msg);
       });
     });
 
-    // Execute when user enter Room Id.
-    socket.on("joinRoom", ({roomId, username}) => {
+    // When a user joins using specific Room ID
+    socket.on("joinRoom", ({ roomId, username, userId }) => {
+      console.log("Received joinRoom:", username, userId);
       if (!rooms[roomId]) {
-        rooms[roomId] = { players: { w: null, b: null }, spectators: [], userIds: {}, usernames: {} };
+        rooms[roomId] = { players: { w: null, b: null }, spectators: [], userIds: {}, usernames: {}, userMongoIds: {} };
         games[roomId] = new Chess();
         console.log(`Created new room: ${roomId}`);
       }
-       // Store username by socket.id
-      rooms[roomId].usernames[socket.id] = username;
-      assignPlayer(roomId, socket);
 
-      // block to emit opponent's name after joining
+      rooms[roomId].usernames[socket.id] = username;
+      assignPlayer(roomId, socket, userId); // Pass userId to assignPlayer
+
       const room = rooms[roomId];
       const opponentId = Object.entries(room.players).find(([, id]) => id !== socket.id)?.[1];
       const opponentName = room.usernames[opponentId];
 
       socket.emit("opponentName", opponentName || "Waiting...");
-      // Chat Function start.
-      // SRUCM (Server Received User Chat Messages), SSUCM (Server Send User Chat Message, to frontend)
-      socket.on("SRUCM", (msg)=>{
+
+      socket.on("SRUCM", (msg) => {
         const roomId = socket.roomId;
-        // socket.emit("SSUCM", msg);
-        // io.to(roomId).emit("SSUCM", msg);
-        // console.log(msg);
         socket.broadcast.to(roomId).emit("SSUCM", msg);
       });
-      // Chat function end.
     });
 
     socket.on("move", (move) => {
@@ -149,73 +148,61 @@ function gameSocket(io) {
           socket.emit("invalidMove", move);
           return;
         }
-        
+
         io.to(roomId).emit("move", result);
         io.to(roomId).emit("boardState", game.fen());
         io.to(roomId).emit("ischeck", game.inCheck());
 
-        if (game.isGameOver()){
+        if (game.isGameOver()) {
           const winnerColor = game.turn() === 'w' ? 'b' : 'w';
           const loserColor = game.turn();
 
-          const winnerId = rooms[roomId].players[winnerColor];
-          const winnerName = rooms[roomId].usernames[winnerId] || 'Not fetch opponent name';
-          const loserId = rooms[roomId].players[loserColor];
+          const winnerSocketId = rooms[roomId].players[winnerColor];
+          const loserSocketId = rooms[roomId].players[loserColor];
+
+          const winnerMongoId = rooms[roomId].userMongoIds[winnerSocketId];
+          const loserMongoId = rooms[roomId].userMongoIds[loserSocketId];
 
           const savePlayerStats = async () => {
-          try {
-            // Winner update
-            await UserInfo.findOneAndUpdate(
-              { userId: winnerId },
-              {
-                $inc: {
-                  rating: 10,
-                  gamesPlayed: 1,
-                  gamesWins: 1
-                }
-              }
-            );
-
-            // Loser update
-            await UserInfo.findOneAndUpdate(
-              { userId: loserId },
-                  {
-                    $inc: {
-                      rating: -10,
-                      gamesPlayed: 1
-                    }
-                  }
+            try {
+              if (winnerMongoId && loserMongoId) {
+                await UserInfo.findOneAndUpdate(
+                  { userId: winnerMongoId },
+                  { $inc: { rating: 10, gamesPlayed: 1, gamesWins: 1 } }
                 );
-              } catch (err) {
-                console.error("Failed to update UserInfo:", err);
+                await UserInfo.findOneAndUpdate(
+                  { userId: loserMongoId },
+                  { $inc: { rating: -10, gamesPlayed: 1 } }
+                );
+              } else {
+                console.warn("Skipped DB update: winner or loser MongoId missing", { winnerMongoId, loserMongoId });
               }
-            };
+            } catch (err) {
+              console.error("Failed to update UserInfo:", err);
+            }
+          };
 
           savePlayerStats();
-        }
 
-        if (game.isGameOver()) {
           let GameResult = { type: "unknown" };
-          const winnerColor = game.turn() === 'w' ? 'b' : 'w'; // player made the last move
-
-          const winnerId = rooms[roomId].players[winnerColor];
-          const winnerName = rooms[roomId].usernames[winnerId] || 'Not fetch opponent name';
+          const winnerName = rooms[roomId].usernames[winnerSocketId] || 'Not fetch opponent name';
 
           if (game.isCheckmate()) {
-            GameResult =  {
+            GameResult = {
               type: "checkmate",
-              winnerColor: winnerColor,
-              winnerName : winnerName,
+              winnerColor,
+              winnerName
             };
           } else if (game.isDraw()) {
-            GameResult =  {
-              type: "Draw",
+            GameResult = {
+              type: "Draw"
             };
           } else {
-            GameResult =  {
-              type: "Unknown",
+            GameResult = {
+              type: "Unknown"
             };
           }
+
           io.to(roomId).emit("gameResult", GameResult);
         }
 
@@ -249,4 +236,4 @@ function gameSocket(io) {
   });
 }
 
-module.exports = {gameSocket, rooms};
+module.exports = { gameSocket, rooms };

@@ -133,11 +133,10 @@ const handleMove = (source, target) => {
 const roomId = prompt("Enter Room ID to join (if you not provide room name then it will auto named):");
 
 if (!roomId) {
-  socket.emit("joinRandomMatch", { username: CONFIG.username });
+  socket.emit("joinRandomMatch", { username: CONFIG.username, userId: CONFIG.userId });
 } else {
-  socket.emit("joinRoom", { roomId, username: CONFIG.username });
+  socket.emit("joinRoom", { roomId, username: CONFIG.username, userId: CONFIG.userId });
 }
-
 
 socket.on("roomId", (roomId) => {
   roomInfo.innerText = roomId;

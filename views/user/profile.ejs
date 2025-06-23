@@ -64,10 +64,10 @@
         <!-- Edit Profile -->
         <div class="bg-zinc-800 p-5 rounded shadow">
           <h3 class="text-lg font-semibold mb-4">Update Info</h3>
-          <form class="space-y-3">
-            <input type="text" placeholder="Username"
+          <form class="space-y-3" action="/profile" method="POST">
+            <input type="text" placeholder="<%= user.name ? user.name : 'Username' %>"
               class="w-full p-2 rounded bg-zinc-700 border border-zinc-600 text-white" />
-            <input type="Country" placeholder="Country"
+            <input type="text" name="country" id="country" required placeholder="<%= user.country ? user.country : 'Country' %>"
               class="w-full p-2 rounded bg-zinc-700 border border-zinc-600 text-white" />
             <button type="submit" class="w-full bg-green-600 hover:bg-green-700 p-2 rounded">Update Profile</button>
           </form>

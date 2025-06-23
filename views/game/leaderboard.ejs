@@ -20,7 +20,7 @@
         <a href="/profile" class="hover:bg-zinc-700 p-2 rounded">Profile</a>
         <a href="/notifications" class="hover:bg-zinc-700 p-2 rounded">Notifications</a>
         <a href="#" class="hover:bg-zinc-700 p-2 rounded">Settings</a>
-        <% if(users.isLoggedIn) { %>
+        <% if(isLoggedIn) { %>
           <a href="/logout" class="hover:bg-zinc-700 p-2 rounded">Logout</a>
         <%} else { %>
           <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
