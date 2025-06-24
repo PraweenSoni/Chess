@@ -13,7 +13,7 @@ router.get('/dashboard', isAuthenticated, async (req, res) => {
   const user = await User.findById(req.session.userId);
   if(!user) return res.redirect('/login');
 
-  res.render('home', {user : {name: user.username}, rooms});
+  res.render('home', {user : {name: user.username, isLoggedIn: true}, rooms});
 });
 
 router.get('/rooms', (req, res) => {
