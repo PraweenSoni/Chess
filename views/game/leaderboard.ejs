@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Leaderboard - Chess Lobby</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
+
 <body class="bg-zinc-900 text-white">
   <div class="flex h-screen">
     <aside class="w-64 bg-zinc-800 p-5 flex flex-col gap-4">
@@ -14,23 +16,38 @@
         <a href="/dashboard" class="hover:bg-zinc-700 p-2 rounded">Home</a>
         <!-- <a href="/watch" class="hover:bg-zinc-700 p-2 rounded">Watch Games</a> -->
         <a href="/create" class="hover:bg-zinc-700 p-2 rounded">Create Room</a>
-         <a href="#" class="hover:bg-zinc-700 p-2 rounded">World/Friends Online</a>
+        <a href="#" class="hover:bg-zinc-700 p-2 rounded">World/Friends Online</a>
         <a href="/leaderboard" class="bg-zinc-700 p-2 rounded font-semibold text-green-400">Leaderboard</a>
         <a href="/profile" class="hover:bg-zinc-700 p-2 rounded">Profile</a>
         <a href="#" class="hover:bg-zinc-700 p-2 rounded">Notifications</a>
         <a href="#" class="hover:bg-zinc-700 p-2 rounded">Settings</a>
         <% if(isLoggedIn) { %>
           <a href="/logout" class="hover:bg-zinc-700 p-2 rounded">Logout</a>
-        <%} else { %>
-          <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
-          <a href="/signup" class="hover:bg-zinc-700 p-2 rounded">Sign Up</a>
-        <%} %>
+          <%} else { %>
+            <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
+            <a href="/signup" class="hover:bg-zinc-700 p-2 rounded">Sign Up</a>
+            <%} %>
       </nav>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 p-8 overflow-y-auto">
-      <h2 class="text-2xl font-semibold mb-6">Leaderboard</h2>
+      <h2 class="text-2xl font-semibold">Leaderboard</h2>
+      <span class="h-5 flex justify-center items-center text-center mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6" x="0px" y="0px" width="30" height="30"
+          viewBox="0,0,256,256">
+          <g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt"
+            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none"
+            font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+            <g transform="scale(8.53333,8.53333)">
+              <path
+                d="M15,3c-6.627,0 -12,5.373 -12,12c0,6.627 5.373,12 12,12c6.627,0 12,-5.373 12,-12c0,-6.627 -5.373,-12 -12,-12zM16,21h-2v-7h2zM15,11.5c-0.828,0 -1.5,-0.672 -1.5,-1.5c0,-0.828 0.672,-1.5 1.5,-1.5c0.828,0 1.5,0.672 1.5,1.5c0,0.828 -0.672,1.5 -1.5,1.5z">
+              </path>
+            </g>
+          </g>
+        </svg>
+        <p class="text-gray-400"> Shortlisting is based on rating—higher ratings appear first.</p>
+      </span>
       <div class="overflow-x-auto">
         <table class="min-w-full text-left bg-zinc-800 rounded shadow">
           <thead>
@@ -45,15 +62,33 @@
           </thead>
           <tbody id="usersRows">
             <% users.forEach(function(user, index){%>
-            <tr class="border-b border-zinc-700 hover:bg-zinc-700">
-              <td class="py-3 px-4"><%= (index+1) + (user.currentUsers - 1) * user.limit %></td>
-              <td class="py-3 px-4 font-semibold"><a class="transition hover:text-green-400" href="profile/<%= user.username %>"><%= user.username %></a></td>
-              <td class="py-3 px-4"><%= user.country %></td>
-              <td class="py-3 px-4"><%= user.rating %></td>
-              <td class="py-3 px-4"><%= user.gamesPlayed %></td>
-              <td class="py-3 px-4"><%= user.gamesWins %></td>
-            </tr>
-            <% }); %>
+              <tr class="border-b border-zinc-700 hover:bg-zinc-700">
+                <td class="py-3 px-4">
+                  <%= (index+1) + (user.currentUsers - 1) * user.limit %>
+                </td>
+                <td class="py-3 px-4 font-semibold"><a class="transition hover:text-green-400"
+                    href="profile/<%= user.username %>">
+                    <%= user.username %>
+                  </a></td>
+                <td class="py-3 px-4 uppercase">
+                    <% if (user.country && countryMap[user.country]) { %>
+                      <%= countryMap[user.country].flag %>
+                        <%= countryMap[user.country].name %>
+                          <% } else { %>
+                            Not specified
+                            <% } %>
+                </td>
+                <td class="py-3 px-4">
+                  <%= user.rating %>
+                </td>
+                <td class="py-3 px-4">
+                  <%= user.gamesPlayed %>
+                </td>
+                <td class="py-3 px-4">
+                  <%= user.gamesWins %>
+                </td>
+              </tr>
+              <% }); %>
           </tbody>
         </table>
       </div>
@@ -93,4 +128,5 @@
     // });
   </script> -->
 </body>
+
 </html>

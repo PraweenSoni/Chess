@@ -26,23 +26,33 @@
         <a href="/Settings" class="hover:bg-zinc-700 p-2 rounded">Settings</a>
         <% if(user.isLoggedIn) { %>
           <a href="/logout" class="hover:bg-zinc-700 p-2 rounded">Logout</a>
-        <%} else { %>
-          <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
-          <a href="/signup" class="hover:bg-zinc-700 p-2 rounded">Sign Up</a>
-        <%} %>
+          <%} else { %>
+            <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
+            <a href="/signup" class="hover:bg-zinc-700 p-2 rounded">Sign Up</a>
+            <%} %>
       </nav>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 p-8 overflow-y-auto">
       <div class="flex items-center gap-6 mb-8">
-        <img src="/assets/images/logo.png" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-green-500 bg-white" />
+        <img src="/assets/images/logo.png" alt="Avatar"
+          class="w-24 h-24 rounded-full border-4 border-green-500 bg-white" />
         <div>
           <h2 class="text-2xl font-bold">
             <%= user.name %>
           </h2>
-          <% const createdAt=new Date(user.createdAt); const formattedDate=createdAt.toLocaleDateString('en-US', {month: 'long' , day: 'numeric' , year: 'numeric' }); %>
-            <p class="text-gray-400">🇮🇳 India • Member since <%= formattedDate %>
+          <% const createdAt=new Date(user.createdAt); const formattedDate=createdAt.toLocaleDateString('en-US',
+            {month: 'long' , day: 'numeric' , year: 'numeric' }); %>
+            <p class="text-gray-300">
+              <% if (user.country && countryMap[user.country]) { %>
+                <%= countryMap[user.country].flag %>
+                  <span class="ml-1">
+                    <%= countryMap[user.country].name %>
+                  </span>
+                  <% } else { %>
+                    Country not specified
+                  <% } %> • Member since <%= formattedDate %>
             </p>
         </div>
       </div>
@@ -52,11 +62,21 @@
         <div class="bg-zinc-800 p-5 rounded shadow">
           <h3 class="text-lg font-semibold mb-4">Stats</h3>
           <div class="space-y-2">
-            <p><strong>Rating:</strong> <%= user.rating %></p>
-            <p><strong>Likes:</strong> <%= user.like %></p>
-            <p><strong>Games Played:</strong> <%= user.gamesPlayed %></p>
-            <p><strong>Wins:</strong> <%= user.gameWins %></p>
-            <p><strong>Losses:</strong>No data</p>
+            <p><strong>Rating:</strong>
+              <%= user.rating %>
+            </p>
+            <p><strong>Likes:</strong>
+              <%= user.like %>
+            </p>
+            <p><strong>Games Played:</strong>
+              <%= user.gamesPlayed %>
+            </p>
+            <p><strong>Wins:</strong>
+              <%= user.gameWins %>
+            </p>
+            <p><strong>Losses:</strong>
+              <%= user.gamesPlayed - user.gameWins %>
+            </p>
             <p><strong>Rank:</strong> #<%= user.rank %> in India</p>
           </div>
         </div>
@@ -65,17 +85,86 @@
         <div class="bg-zinc-800 p-5 rounded shadow">
           <h3 class="text-lg font-semibold mb-4">Update Info</h3>
           <form class="space-y-3" action="/profile" method="POST">
-            <input type="text" placeholder="<%= user.name ? user.name : 'Username' %>"
-              class="w-full p-2 rounded bg-zinc-700 border border-zinc-600 text-white" />
-            <input type="text" name="country" id="country" required placeholder="<%= user.country ? user.country : 'Country' %>"
-              class="w-full p-2 rounded bg-zinc-700 border border-zinc-600 text-white" />
+            <label for="usernameInp" class="block text-sm font-medium text-white mb-2">
+              Your Username:
+            </label>
+            <input type="text" id="usernameInp" placeholder="<%= user.name ? user.name : 'Username' %>"
+              class="w-full p-2 rounded focus:outline-none focus:ring-2  bg-zinc-700 border border-zinc-600 text-white focus:ring-green-500 focus:border-green-500" />
+            <!-- <input type="text" name="country" id="country" required
+              placeholder="<%= user.country ? user.country : 'Country' %>" class="w-full p-2 rounded bg-zinc-700 border border-zinc-600 text-white" /> -->
+            <!-- <div>
+              <label for="country" class="block text-sm font-medium text-white mb-2">
+                Choose your country:
+              </label>
+              <select id="country" name="country" required class="block w-full p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500  bg-zinc-700 border-zinc-600 text-white">
+                <option value="in">🇮🇳 India</option>
+                <option value="us">🇺🇸 United States</option>
+                <option value="gb">🇬🇧 United Kingdom</option>
+                <option value="ca">🇨🇦 Canada</option>
+                <option value="au">🇦🇺 Australia</option>
+                <option value="de">🇩🇪 Germany</option>
+                <option value="fr">🇫🇷 France</option>
+                <option value="jp">🇯🇵 Japan</option>
+                <option value="cn">🇨🇳 China</option>
+                <option value="ru">🇷🇺 Russia</option>
+                <option value="br">🇧🇷 Brazil</option>
+                <option value="za">🇿🇦 South Africa</option>
+                <option value="it">🇮🇹 Italy</option>
+                <option value="mx">🇲🇽 Mexico</option>
+                <option value="es">🇪🇸 Spain</option>
+                <option value="kr">🇰🇷 South Korea</option>
+                <option value="sa">🇸🇦 Saudi Arabia</option>
+                <option value="tr">🇹🇷 Turkey</option>
+                <option value="ar">🇦🇷 Argentina</option>
+                <option value="id">🇮🇩 Indonesia</option>
+                <option value="nl">🇳🇱 Netherlands</option>
+                <option value="se">🇸🇪 Sweden</option>
+                <option value="ch">🇨🇭 Switzerland</option>
+                <option value="ua">🇺🇦 Ukraine</option>
+                <option value="pl">🇵🇱 Poland</option>
+                <option value="no">🇳🇴 Norway</option>
+                <option value="bd">🇧🇩 Bangladesh</option>
+                <option value="pk">🇵🇰 Pakistan</option>
+                <option value="ng">🇳🇬 Nigeria</option>
+                <option value="th">🇹🇭 Thailand</option>
+                <option value="my">🇲🇾 Malaysia</option>
+                <option value="sg">🇸🇬 Singapore</option>
+                <option value="nz">🇳🇿 New Zealand</option>
+                <option value="eg">🇪🇬 Egypt</option>
+                <option value="cz">🇨🇿 Czech Republic</option>
+                <option value="fi">🇫🇮 Finland</option>
+                <option value="dk">🇩🇰 Denmark</option>
+                <option value="il">🇮🇱 Israel</option>
+                <option value="ph">🇵🇭 Philippines</option>
+                <option value="ve">🇻🇪 Venezuela</option>
+                <option value="cl">🇨🇱 Chile</option>
+                <option value="ie">🇮🇪 Ireland</option>
+                <option value="at">🇦🇹 Austria</option>
+                <option value="be">🇧🇪 Belgium</option>
+                <option value="gr">🇬🇷 Greece</option>
+                <option value="pt">🇵🇹 Portugal</option>
+                <option value="ro">🇷🇴 Romania</option>
+                <option value="hu">🇭🇺 Hungary</option>
+                <option value="hu">🌎 Other</option>
+              </select>
+            </div> -->
+            <label for="country" class="block text-sm font-medium text-gray-200 mb-2">
+              Choose a country:
+            </label>
+
+            <select name="country" id="country" required
+              class="w-full p-2 rounded bg-zinc-700 border border-zinc-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option disabled selected>Loading countries...</option>
+            </select>
+
             <button type="submit" class="w-full bg-green-600 hover:bg-green-700 p-2 rounded">Update Profile</button>
           </form>
         </div>
       </div>
 
       <div>
-        <h3 class="text-lg font-semibold mb-4">Recent Games<span class="ml-2 px-1 font text-black bg-green-400 rounded-2xl">Comming Soon</span></h3>
+        <h3 class="text-lg font-semibold mb-4">Recent Games<span
+            class="ml-2 px-1 font text-black bg-green-400 rounded-2xl">Comming Soon</span></h3>
         <div class="space-y-3">
           <!-- Game Card -->
           <div class="bg-zinc-800 p-4 rounded shadow flex justify-between items-center">
@@ -97,6 +186,74 @@
       </div>
     </main>
   </div>
+  <script>
+    const countries = [
+      { code: "us", name: "United States", flag: "🇺🇸" },
+      { code: "gb", name: "United Kingdom", flag: "🇬🇧" },
+      { code: "in", name: "India", flag: "🇮🇳" },
+      { code: "ca", name: "Canada", flag: "🇨🇦" },
+      { code: "au", name: "Australia", flag: "🇦🇺" },
+      { code: "de", name: "Germany", flag: "🇩🇪" },
+      { code: "fr", name: "France", flag: "🇫🇷" },
+      { code: "jp", name: "Japan", flag: "🇯🇵" },
+      { code: "cn", name: "China", flag: "🇨🇳" },
+      { code: "ru", name: "Russia", flag: "🇷🇺" },
+      { code: "br", name: "Brazil", flag: "🇧🇷" },
+      { code: "za", name: "South Africa", flag: "🇿🇦" },
+      { code: "it", name: "Italy", flag: "🇮🇹" },
+      { code: "mx", name: "Mexico", flag: "🇲🇽" },
+      { code: "es", name: "Spain", flag: "🇪🇸" },
+      { code: "kr", name: "South Korea", flag: "🇰🇷" },
+      { code: "sa", name: "Saudi Arabia", flag: "🇸🇦" },
+      { code: "tr", name: "Turkey", flag: "🇹🇷" },
+      { code: "ar", name: "Argentina", flag: "🇦🇷" },
+      { code: "id", name: "Indonesia", flag: "🇮🇩" },
+      { code: "nl", name: "Netherlands", flag: "🇳🇱" },
+      { code: "se", name: "Sweden", flag: "🇸🇪" },
+      { code: "ch", name: "Switzerland", flag: "🇨🇭" },
+      { code: "ua", name: "Ukraine", flag: "🇺🇦" },
+      { code: "pl", name: "Poland", flag: "🇵🇱" },
+      { code: "no", name: "Norway", flag: "🇳🇴" },
+      { code: "bd", name: "Bangladesh", flag: "🇧🇩" },
+      { code: "pk", name: "Pakistan", flag: "🇵🇰" },
+      { code: "ng", name: "Nigeria", flag: "🇳🇬" },
+      { code: "th", name: "Thailand", flag: "🇹🇭" },
+      { code: "my", name: "Malaysia", flag: "🇲🇾" },
+      { code: "sg", name: "Singapore", flag: "🇸🇬" },
+      { code: "nz", name: "New Zealand", flag: "🇳🇿" },
+      { code: "eg", name: "Egypt", flag: "🇪🇬" },
+      { code: "cz", name: "Czech Republic", flag: "🇨🇿" },
+      { code: "fi", name: "Finland", flag: "🇫🇮" },
+      { code: "dk", name: "Denmark", flag: "🇩🇰" },
+      { code: "il", name: "Israel", flag: "🇮🇱" },
+      { code: "ph", name: "Philippines", flag: "🇵🇭" },
+      { code: "ve", name: "Venezuela", flag: "🇻🇪" },
+      { code: "cl", name: "Chile", flag: "🇨🇱" },
+      { code: "ie", name: "Ireland", flag: "🇮🇪" },
+      { code: "at", name: "Austria", flag: "🇦🇹" },
+      { code: "be", name: "Belgium", flag: "🇧🇪" },
+      { code: "gr", name: "Greece", flag: "🇬🇷" },
+      { code: "pt", name: "Portugal", flag: "🇵🇹" },
+      { code: "ro", name: "Romania", flag: "🇷🇴" },
+      { code: "hu", name: "Hungary", flag: "🇭🇺" },
+      { code: "co", name: "Colombia", flag: "🇨🇴" },
+      { code: "vn", name: "Vietnam", flag: "🇻🇳" }
+    ];
+
+    // EJS will inject the saved country code or blank
+    const userCountry = "<%= user.country || '' %>";
+    const select = document.getElementById("country");
+    select.innerHTML = ""; // clear the loading placeholder
+
+    countries.forEach(({ code, name, flag }) => {
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = `${flag} ${name}`;
+      if (code === userCountry) opt.selected = true;
+      select.appendChild(opt);
+    });
+  </script>
+
 </body>
 
 </html>

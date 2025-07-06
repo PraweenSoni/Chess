@@ -26,23 +26,35 @@
         <a href="/Settings" class="hover:bg-zinc-700 p-2 rounded">Settings</a>
         <% if(user.isLoggedIn) { %>
           <a href="/logout" class="hover:bg-zinc-700 p-2 rounded">Logout</a>
-        <%} else { %>
-          <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
-          <a href="/signup" class="hover:bg-zinc-700 p-2 rounded">Sign Up</a>
-        <%} %>
+          <%} else { %>
+            <a href="/login" class="hover:bg-zinc-700 p-2 rounded">Login</a>
+            <a href="/signup" class="hover:bg-zinc-700 p-2 rounded">Sign Up</a>
+            <%} %>
       </nav>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 p-8 overflow-y-auto">
       <div class="flex items-center gap-6 mb-8">
-        <img src="/assets/images/logo.png" alt="Avatar" class="w-24 h-24 rounded-full border-4 border-green-500 bg-white" />
+        <img src="/assets/images/logo.png" alt="Avatar"
+          class="w-24 h-24 rounded-full border-4 border-green-500 bg-white" />
         <div>
           <h2 class="text-2xl font-bold">
             <%= user.username %>
           </h2>
-          <% const createdAt=new Date(user.createdAt); const formattedDate=createdAt.toLocaleDateString('en-US', {month: 'long' , day: 'numeric' , year: 'numeric' }); %>
-            <p class="text-gray-400">🇮🇳 India • Member since <%= formattedDate %>
+          <% const createdAt=new Date(user.createdAt); const formattedDate=createdAt.toLocaleDateString( 'en-US' , {
+            month: 'long' , day: 'numeric' , year: 'numeric' } ); const code=(userInfo && userInfo.country || ''
+            ).toLowerCase(); %>
+
+            <p class="text-gray-300">
+              <% if (code && countryMap[code]) { %>
+                <%= countryMap[code].flag %>
+                  <span class="ml-1">
+                    <%= countryMap[code].name %>
+                  </span>
+                  <% } else { %>
+                    Country not specified
+                    <% } %> • Member since <%= formattedDate %>
             </p>
         </div>
       </div>
@@ -52,10 +64,18 @@
         <div class="bg-zinc-800 p-5 rounded shadow">
           <h3 class="text-lg font-semibold mb-4">Stats</h3>
           <div class="space-y-2">
-            <p><strong>Rating:</strong> <%= userInfo.rating %></p>
-            <p><strong>Likes:</strong> <%= userInfo.like %></p>
-            <p><strong>Games Played:</strong> <%= userInfo.gamesPlayed %></p>
-            <p><strong>Wins:</strong> <%= userInfo.gamesWins %></p>
+            <p><strong>Rating:</strong>
+              <%= userInfo.rating %>
+            </p>
+            <p><strong>Likes:</strong>
+              <%= userInfo.like %>
+            </p>
+            <p><strong>Games Played:</strong>
+              <%= userInfo.gamesPlayed %>
+            </p>
+            <p><strong>Wins:</strong>
+              <%= userInfo.gamesWins %>
+            </p>
             <p><strong>Losses:</strong>No data</p>
             <p><strong>Rank:</strong> #<%= userInfo.rank %> in India</p>
           </div>
@@ -63,7 +83,8 @@
       </div>
 
       <div>
-        <h3 class="text-lg font-semibold mb-4">Recent Games<span class="ml-2 px-1 font text-black bg-green-400 rounded-2xl font-medium">Comming Soon</span></h3>
+        <h3 class="text-lg font-semibold mb-4">Recent Games<span
+            class="ml-2 px-1 font text-black bg-green-400 rounded-2xl font-medium">Comming Soon</span></h3>
         <div class="space-y-3">
           <!-- Game Card -->
           <div class="bg-zinc-800 p-4 rounded shadow flex justify-between items-center">

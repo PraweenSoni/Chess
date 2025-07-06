@@ -19,10 +19,10 @@
 //       family: 4,              // prefer IPv4
 //       socketTimeoutMS: 10000, // quick fail if no connection
 //     });
-//     console.log('✅ Connected to MongoDB Atlas');
+//     console.log('Connected to MongoDB Atlas');
 //   } catch (err) {
-//     console.error('❌ MongoDB connection failed:', err.message);
-//     console.error('💥 Full error:', err);
+//     console.error('MongoDB connection failed:', err.message);
+//     console.error('Full error:', err);
 //     process.exit(1);
 //   }
 // }
